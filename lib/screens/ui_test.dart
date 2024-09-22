@@ -8,14 +8,22 @@ class UiTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Get.theme.colorScheme.surface,
       appBar: AppBar(
-        title: Text("Ui test"),
+        backgroundColor: Colors.transparent,
         actions: [IconButton(onPressed: () => Get.to(() => Settings()), icon: Icon(Icons.settings))],
       ),
-      body: Column(
+      extendBodyBehindAppBar: true,
+      body: Stack(
         children: [
-          Container(height: 400, width: 400, color: Theme.of(context).colorScheme.primary),
+          Positioned(
+            left: 32,
+            top: 0,
+            bottom: 0,
+            child: Container(
+              color: Get.theme.colorScheme.primaryContainer,
+              width: 2,
+            ),
+          )
         ],
       ),
     );

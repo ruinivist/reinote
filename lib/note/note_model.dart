@@ -16,25 +16,40 @@ class NoNote extends NoteBase {
 class Note extends NoteBase {
   final String title;
   final String description;
-  final NoteBase next;
 
-  bool get hasNext => next is! NoNote;
+  bool get hasRight => right is! NoNote;
+  bool get hasLeft => left is! NoNote;
+  bool get hasUp => up is! NoNote;
+  bool get hasDown => down is! NoNote;
+
+  NoteBase up = const NoNote();
+  NoteBase down = const NoNote();
+  NoteBase left = const NoNote();
+  NoteBase right = const NoNote();
 
   Note({
     required this.title,
     required this.description,
-    this.next = const NoNote(),
   });
+
+  // todo: add check so as this doesn't overwrite existing connections
+  void connectRight(Note note) {
+    note.left = this;
+    right = note;
+  }
+
+  void connectLeft(Note note) {
+    note.right = this;
+    left = note;
+  }
+
+  void connectUp(Note note) {
+    note.down = this;
+    up = note;
+  }
+
+  void connectDown(Note note) {
+    note.up = this;
+    down = note;
+  }
 }
-
-Note _someNext = Note(
-  title: 'Some next',
-  description: 'Some next description',
-  next: NoNote(),
-);
-
-Note root = Note(
-  title: 'Root',
-  description: 'Root description',
-  next: _someNext,
-);
