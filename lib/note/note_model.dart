@@ -31,7 +31,6 @@ class Note extends NoteBase {
     required this.title,
     required this.description,
   });
-
   // todo: add check so as this doesn't overwrite existing connections
   void connectRight(Note note) {
     note.left = this;
@@ -52,4 +51,7 @@ class Note extends NoteBase {
     note.up = this;
     down = note;
   }
+
+  List<NoteBase> get neighbors => [up, down, left, right];
+  List<Note> get validNeighbors => neighbors.whereType<Note>().toList();
 }

@@ -20,10 +20,15 @@ note 1
 */
 
 void connect() {
-  note1.connectUp(note2);
-  note2.connectUp(note3);
-  note2.connectRight(note4);
-  note4.connectRight(note5);
+  var cur = note1;
+  for (int i = 0; i < 1000; i++) {
+    var next = Note(
+      title: 'note${i + 6}',
+      description: 'description${i + 6}',
+    );
+    cur.connectDown(next);
+    cur = next;
+  }
 }
 
 final root = note1;

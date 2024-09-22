@@ -9,6 +9,7 @@ import 'package:local_tl_app/controllers/filesystem.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/markdown/split_pane_editor.dart';
+import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/ui_test.dart';
 
@@ -28,12 +29,15 @@ class _AppState extends State<App> {
     Get.put(ThemeController());
     return Obx(
       () => GetMaterialApp(
+        showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
           colorScheme: ThemeController.to.colorScheme,
         ),
-        home: UiTest(),
+        home: CanvasView(
+          rootNote: root,
+        ),
       ),
     );
   }

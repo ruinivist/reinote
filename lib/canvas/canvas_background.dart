@@ -16,7 +16,7 @@ class DotGridBackround extends CanvasBackground {
   final Color color;
 
   const DotGridBackround({
-    this.size = 4.0,
+    this.size = 2.0,
     this.spacing = 24.0,
     this.color = Colors.black26,
   }) : super();

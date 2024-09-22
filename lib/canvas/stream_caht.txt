@@ -1,0 +1,129 @@
+Stream Chat
+5:59ruinivist: 30 mins already Sadge
+6:11ruinivist: ribbon + basic note widget
+6:12ruinivist: lule twtich brteak
+6:29ruinivist: 10m break
+6:29ruinivist: lol not like anyones watching
+Welcome to the chat room!
+New
+ruinivist: all good now
+ruinivist: my setup looks so cool
+ruinivist: change of plans
+ruinivist: lets for now go for an all in 2d layout
+ruinivist: full custom
+
+First Time Chat
+qeqpep0: hihi
+ruinivist: lol how did u reach here
+ruinivist: hi
+qeqpep0: this category is pretty smoll
+qeqpep0: not hard to scroll
+ruinivist: what u up to then
+qeqpep0: work. after checking in w/you :|
+qeqpep0: :-l
+ruinivist: work on the weekend
+ruinivist: enjoy
+qeqpep0: eeh. as unemployed person i call everything work and too hard to do
+ruinivist: lol
+qeqpep0: are you learning smth new rn?
+ruinivist: what I need to do now is draw all the widgets on a 2d plane, there's no "widget" as such for this so got to use a RenderObject but then things get tricky as you literally have to position and draw everything along with the scroll
+
+Replying to @qeqpep0: are you learning smth new rn?
+ruinivist: eh kinda, i know this framework mostly
+ruinivist: but the things required for this app are new
+ruinivist: tbh what I am trying to do now lies into game engine terittory too much
+ruinivist: but we'll see, its a hobby project anyway
+ruinivist: its basically something like one note except that the nodes are constrained on axes
+qeqpep0: when you scroll, some nodes don't move?
+qeqpep0: node is a note?
+ruinivist: yep
+
+Replying to @qeqpep0: when you scroll, some nodes don't move?
+ruinivist: nope see it as a 2d grid, there's no arbitary positions as in I cannot place something diagonally
+ruinivist: exactly like this comment
+ruinivist: except I want to be able to focus on the note by swiping
+qeqpep0: ok. i see
+ruinivist: and I want that one note/excalidraw like free pan as wel
+ruinivist: its just the placements that I define to not be arbitary
+qeqpep0: infinite canvas is how i'd like to add notes to my knowledge base
+qeqpep0: good luck
+ruinivist: ty
+ruinivist: obsidian has that and few other apps too
+ruinivist: but there's stuff I want that not in there
+qeqpep0: like?
+ruinivist: i'm a bit opinioated on the way I want to arrange them
+ruinivist: let me explain
+ruinivist: i want it like a journal, a local twitter feed kind of
+ruinivist: so when you "post" it adds new entry just like a linear feed
+ruinivist: but say I want to elaborate on note2 I should be able to swipe right and continue
+qeqpep0: yep
+ruinivist: something like this
+ruinivist: so up and down are branches
+ruinivist: and right is progress on the branch
+ruinivist: I can manually make it like this in obsidian dragging around
+ruinivist: but I want this baked in
+ruinivist: + i want an open source solution
+ruinivist: obsidian is not anymore
+qeqpep0: bruh
+ruinivist: ?
+qeqpep0: like, good that i stuck with org-roam
+ruinivist: yep
+ruinivist: I used joplin for the longest time
+ruinivist: back now
+ruinivist: i'll implement zoom as well before moving on
+
+First Time Chat
+flatteringmind: Che̢ap vie̮wers on https://octobiitsteam.pro/2t71
+ruinivist: lol
+ruinivist: nt
+ruinivist: i'm curious where these links lead to
+ruinivist: open in tor maybe LULE
+ruinivist: how its been only 1.5 h
+ruinivist: -__- well probably for the good
+ruinivist: twitch break LULE
+ruinivist: yeah looks like we are lagging as we get to a 1000 notes
+ruinivist: assumed so as we literally paint it all
+ruinivist: even if not on screen
+ruinivist: i dont think I can fix skip layout but rest probably
+ruinivist: looks like even layout is taking too much time
+ruinivist: I was afraid this might happen and I don't seem to have a better solution for it
+ruinivist: i doubt what claude says will work
+ruinivist: wierd
+ruinivist: i
+ruinivist: i'm not painting anything yet its slow
+ruinivist: is it simply that 1000 widgets are too big to pass?
+qeqpep0: is there a profiler
+ruinivist: there is
+ruinivist: i'm not a 100% sure if it'll help here, ig I can try
+ruinivist: in any case the current approach is not scalable
+ruinivist: i need that 60fps
+ruinivist: atleast
+qeqpep0: how will you select which notes to draw? instead of all
+qeqpep0: is dart object oriented?
+ruinivist: yep
+ruinivist: I can always have one note that I know was rendered, starting with first paint
+ruinivist: then tracking offset changes I know at each time which ones need to be drawn
+ruinivist: right now the problem is with api, I don't know it all that well
+
+Replying to @ruinivist: then tracking offset changes I know at each time which ones need to be drawn
+ruinivist: as long as keep the sizes of each note widget fixed or discrete based on quickly calculated param
+ruinivist: missed that
+
+Replying to @ruinivist: as long as keep the sizes of each note widget fixed or discrete based on quickly calculated param
+ruinivist: link string size
+ruinivist: brb, current impl is a bit buggy but we got back to good perf with rendering only whats in view as long as I know the size of each note widget
+ruinivist: which can't be avoided because otherwise you have to do layout for all to know which to draw and in that case it would obviously blow up
+ruinivist: sizes could be discrete though as in I can make a small, mid large note based on string len and any larger would open in a new window
+ruinivist: or overlay on top
+ruinivist: lol new issue now, not too big though
+ruinivist: I don't know what the source of dfs is gonna be
+ruinivist: while panning across
+ruinivist: ig i can just take whatever was last visible as source
+ruinivist: oh I get it I do get the correct children but my positioning algo currently depends on the order of children which is why it flips all the time
+ruinivist: plus the picking algo is a bit messed up as well
+ruinivist: since I need positions anyway
+ruinivist: I need to build a separate graph layer that will be the oracle positions
+ruinivist: in the absolute sense
+ruinivist: then I can always figure out the centre of screen based on offset and find that of the visible nodes, which would be few, which one is the closest to centre
+﻿
+

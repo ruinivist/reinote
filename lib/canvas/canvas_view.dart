@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/note/note_widget.dart';
+
+import '../note/note_data.dart';
+import '../utils/log.dart';
 
 class CanvasView extends StatefulWidget {
   final CanvasBackground canvasBackground;
@@ -18,6 +22,13 @@ class CanvasView extends StatefulWidget {
   State<CanvasView> createState() => _CanvasViewState();
 }
 
+class Pair<T1, T2> {
+  final T1 a;
+  final T2 b;
+
+  Pair(this.a, this.b);
+}
+
 class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateMixin {
   Offset _offset = Offset.zero;
 
@@ -27,44 +38,114 @@ class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateM
     });
   }
 
+  late Note dfsSource;
+  late Point dfsSourcePos;
+
+  List<Widget> childrenToDraw() {
+    // i have the offset and I have the root
+    // assumptio: wrong but for now. dfs starts at root ending when a node is reached
+    // that is not visible'
+    List<Widget> widgets = [];
+
+    lg.i('offset ${_offset}');
+    lg.i('screen size ${MediaQuery.of(context).size}');
+
+    List<Pair<Note, Point>> stack = [Pair(dfsSource, dfsSourcePos)];
+    Set<Note> visited = {};
+
+    lg.i('starting at ${dfsSource.title} ${dfsSourcePos.x} ${dfsSourcePos.y}');
+
+    while (stack.isNotEmpty) {
+      final current = stack.removeLast();
+
+      widgets.add(NoteWidget(note: current.a));
+      visited.add(current.a);
+
+      // lg.i(_offset);
+      // if this one won't be visible, don't add its children
+      final pos = current.b;
+      if (!(pos.x > _offset.dx - 500 &&
+          pos.x < _offset.dx + MediaQuery.of(context).size.width + 500 &&
+          pos.y > -_offset.dy - 500 &&
+          pos.y < -_offset.dy + MediaQuery.of(context).size.height + 500)) {
+        // lg.i('not visible ${pos.x} ${pos.y}');
+        continue;
+      }
+
+      // for (final next in current.a.validNeighbors) {
+      //   if (!visited.contains(next)) {
+      //     stack.add(next);
+      //   }
+      // }
+
+      // only down for now
+      //
+
+      dfsSource = current.a;
+      dfsSourcePos = current.b;
+
+      // lg.i('current ${current.a.title} ${current.b.x} ${current.b.y}');
+
+      double noteHeight = 100;
+      if (current.a.hasDown && !visited.contains(current.a.down)) {
+        stack.add(Pair(current.a.down as Note, Point(current.b.x, current.b.y + noteHeight)));
+      }
+      if (current.a.hasUp && !visited.contains(current.a.up)) {
+        stack.add(Pair(current.a.up as Note, Point(current.b.x, current.b.y - noteHeight)));
+      }
+    }
+
+    return widgets;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    dfsSource = root;
+    dfsSourcePos = Point(Get.size.width / 2, Get.size.height / 2);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: widget.canvasBackground.baseColor,
-      child: GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onPanUpdate: _handlePanUpdate,
-        child: _CanvasRenderObject(
-          offset: _offset,
-          rootNote: widget.rootNote,
-          canvasBackground: widget.canvasBackground,
+    return Stack(
+      children: [
+        Container(
+          color: widget.canvasBackground.baseColor,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onPanUpdate: _handlePanUpdate,
+            child: _CanvasRenderObject(
+              offset: _offset,
+              rootNote: widget.rootNote,
+              canvasBackground: widget.canvasBackground,
+              children: childrenToDraw(),
+            ),
+          ),
         ),
-      ),
+        Positioned(
+          child: IconButton(icon: Icon(Icons.add), onPressed: () {}),
+          top: 10,
+          left: 10,
+        ),
+      ],
     );
   }
 }
 
 class _CanvasRenderObject extends MultiChildRenderObjectWidget {
   final Offset offset;
-  final Note rootNote;
+
+  Note rootNote;
+  List<Widget> children;
   final CanvasBackground canvasBackground;
 
   _CanvasRenderObject({
     required this.offset,
     required this.rootNote,
+    required this.children,
     required this.canvasBackground,
     super.key,
-  }) : super(children: _buildNoteWidgets(rootNote));
-
-  static List<Widget> _buildNoteWidgets(Note note) {
-    List<Widget> widgets = [];
-    NoteBase currentNote = note;
-    while (currentNote is Note) {
-      widgets.add(NoteWidget(note: currentNote));
-      currentNote = currentNote.next;
-    }
-    return widgets;
-  }
+  }) : super(children: children);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -122,7 +203,7 @@ class _CanvasRenderBox extends RenderBox
       final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
       child.layout(constraints.loosen(), parentUsesSize: true);
       childParentData.offset = childOffset;
-      childOffset += Offset(0, child.size.height + 10); // Add some vertical spacing between notes
+      childOffset += Offset(0, child.size.height); // Add some vertical spacing between notes
       child = childParentData.nextSibling;
     }
   }
@@ -135,13 +216,10 @@ class _CanvasRenderBox extends RenderBox
     canvasBackground.paint(context, _offset, size);
 
     RenderBox? child = firstChild;
-    int childC = 0;
     while (child != null) {
       final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
       context.paintChild(child, _offset + childParentData.offset);
       child = childParentData.nextSibling;
-      childC++;
-      if (childC == 1) break;
     }
   }
 
