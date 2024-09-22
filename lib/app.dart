@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
 import 'package:local_tl_app/controllers/filesystem.dart';
+import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/markdown/split_pane_editor.dart';
 import 'package:local_tl_app/note/note_model.dart';
+import 'package:local_tl_app/screens/ui_test.dart';
 
 import 'screens/home.dart';
 import 'utils/log.dart';
@@ -21,9 +25,16 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Home(),
+    Get.put(ThemeController());
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
+          colorScheme: ThemeController.to.colorScheme,
+        ),
+        home: UiTest(),
+      ),
     );
   }
 }
