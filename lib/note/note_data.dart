@@ -12,22 +12,23 @@ final note5 = Note(title: 'note5', description: 'description5');
 
 /*
 
-note 3
+note 1
 
 note 2 -> note 4 -> note 5
 
-note 1
+note 3
 */
 
 void connect() {
-  var cur = note1;
+  note1.connectDown(note2);
+  note2.connectDown(note3);
+  note2.connectRight(note4);
+  note4.connectRight(note5);
+
+  var cur = note3;
   for (int i = 0; i < 1000; i++) {
-    var next = Note(
-      title: 'note${i + 6}',
-      description: 'description${i + 6}',
-    );
-    cur.connectDown(next);
-    cur = next;
+    cur.connectDown(Note(title: 'note${i + 6}', description: 'description${i + 6}'));
+    cur = cur.down as Note;
   }
 }
 

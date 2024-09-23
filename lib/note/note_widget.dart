@@ -14,8 +14,8 @@ class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 200,
-      height: 100,
+      width: 120,
+      height: 80,
       child: GestureDetector(
         onTap: () {},
         child: Card(

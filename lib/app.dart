@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
 import 'package:local_tl_app/controllers/filesystem.dart';
+import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/markdown/split_pane_editor.dart';
@@ -27,6 +28,8 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     Get.put(ThemeController());
+    Get.put(
+        PositionController(sourceNote: root, sourcePosition: Position(0, 200), screen: MediaQuery.of(context).size));
     return Obx(
       () => GetMaterialApp(
         showPerformanceOverlay: true,
@@ -35,9 +38,7 @@ class _AppState extends State<App> {
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
           colorScheme: ThemeController.to.colorScheme,
         ),
-        home: CanvasView(
-          rootNote: root,
-        ),
+        home: CanvasView(),
       ),
     );
   }

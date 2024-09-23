@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
+import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/note/note_widget.dart';
 
@@ -10,10 +11,8 @@ import '../utils/log.dart';
 
 class CanvasView extends StatefulWidget {
   final CanvasBackground canvasBackground;
-  final Note rootNote;
 
   const CanvasView({
-    required this.rootNote,
     this.canvasBackground = const DotGridBackround(),
     super.key,
   });
@@ -22,81 +21,75 @@ class CanvasView extends StatefulWidget {
   State<CanvasView> createState() => _CanvasViewState();
 }
 
-class Pair<T1, T2> {
-  final T1 a;
-  final T2 b;
-
-  Pair(this.a, this.b);
-}
-
 class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateMixin {
   Offset _offset = Offset.zero;
 
   void _handlePanUpdate(DragUpdateDetails details) {
     setState(() {
       _offset += details.delta;
+      PositionController.to.offset.value = -_offset;
     });
   }
 
   late Note dfsSource;
   late Point dfsSourcePos;
 
-  List<Widget> childrenToDraw() {
-    // i have the offset and I have the root
-    // assumptio: wrong but for now. dfs starts at root ending when a node is reached
-    // that is not visible'
-    List<Widget> widgets = [];
+  // List<Widget> childrenToDraw() {
+  //   // i have the offset and I have the root
+  //   // assumptio: wrong but for now. dfs starts at root ending when a node is reached
+  //   // that is not visible'
+  //   List<Widget> widgets = [];
 
-    lg.i('offset ${_offset}');
-    lg.i('screen size ${MediaQuery.of(context).size}');
+  //   // lg.i('offset ${_offset}');
+  //   // lg.i('screen size ${MediaQuery.of(context).size}');
 
-    List<Pair<Note, Point>> stack = [Pair(dfsSource, dfsSourcePos)];
-    Set<Note> visited = {};
+  //   List<Pair<Note, Point>> stack = [Pair(dfsSource, dfsSourcePos)];
+  //   Set<Note> visited = {};
 
-    lg.i('starting at ${dfsSource.title} ${dfsSourcePos.x} ${dfsSourcePos.y}');
+  //   // lg.i('starting at ${dfsSource.title} ${dfsSourcePos.x} ${dfsSourcePos.y}');
 
-    while (stack.isNotEmpty) {
-      final current = stack.removeLast();
+  //   while (stack.isNotEmpty) {
+  //     final current = stack.removeLast();
 
-      widgets.add(NoteWidget(note: current.a));
-      visited.add(current.a);
+  //     widgets.add(NoteWidget(note: current.a));
+  //     visited.add(current.a);
 
-      // lg.i(_offset);
-      // if this one won't be visible, don't add its children
-      final pos = current.b;
-      if (!(pos.x > _offset.dx - 500 &&
-          pos.x < _offset.dx + MediaQuery.of(context).size.width + 500 &&
-          pos.y > -_offset.dy - 500 &&
-          pos.y < -_offset.dy + MediaQuery.of(context).size.height + 500)) {
-        // lg.i('not visible ${pos.x} ${pos.y}');
-        continue;
-      }
+  //     // lg.i(_offset);
+  //     // if this one won't be visible, don't add its children
+  //     final pos = current.b;
+  //     if (!(pos.x > _offset.dx - 500 &&
+  //         pos.x < _offset.dx + MediaQuery.of(context).size.width + 500 &&
+  //         pos.y > -_offset.dy - 500 &&
+  //         pos.y < -_offset.dy + MediaQuery.of(context).size.height + 500)) {
+  //       // lg.i('not visible ${pos.x} ${pos.y}');
+  //       continue;
+  //     }
 
-      // for (final next in current.a.validNeighbors) {
-      //   if (!visited.contains(next)) {
-      //     stack.add(next);
-      //   }
-      // }
+  //     // for (final next in current.a.validNeighbors) {
+  //     //   if (!visited.contains(next)) {
+  //     //     stack.add(next);
+  //     //   }
+  //     // }
 
-      // only down for now
-      //
+  //     // only down for now
+  //     //
 
-      dfsSource = current.a;
-      dfsSourcePos = current.b;
+  //     dfsSource = current.a;
+  //     dfsSourcePos = current.b;
 
-      // lg.i('current ${current.a.title} ${current.b.x} ${current.b.y}');
+  //     // lg.i('current ${current.a.title} ${current.b.x} ${current.b.y}');
 
-      double noteHeight = 100;
-      if (current.a.hasDown && !visited.contains(current.a.down)) {
-        stack.add(Pair(current.a.down as Note, Point(current.b.x, current.b.y + noteHeight)));
-      }
-      if (current.a.hasUp && !visited.contains(current.a.up)) {
-        stack.add(Pair(current.a.up as Note, Point(current.b.x, current.b.y - noteHeight)));
-      }
-    }
+  //     double noteHeight = 100;
+  //     if (current.a.hasDown && !visited.contains(current.a.down)) {
+  //       stack.add(Pair(current.a.down as Note, Point(current.b.x, current.b.y + noteHeight)));
+  //     }
+  //     if (current.a.hasUp && !visited.contains(current.a.up)) {
+  //       stack.add(Pair(current.a.up as Note, Point(current.b.x, current.b.y - noteHeight)));
+  //     }
+  //   }
 
-    return widgets;
-  }
+  //   return widgets;
+  // }
 
   @override
   void initState() {
@@ -116,9 +109,9 @@ class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateM
             onPanUpdate: _handlePanUpdate,
             child: _CanvasRenderObject(
               offset: _offset,
-              rootNote: widget.rootNote,
+              positions: PositionController.to.positions,
               canvasBackground: widget.canvasBackground,
-              children: childrenToDraw(),
+              childr: PositionController.to.children,
             ),
           ),
         ),
@@ -135,28 +128,28 @@ class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateM
 class _CanvasRenderObject extends MultiChildRenderObjectWidget {
   final Offset offset;
 
-  Note rootNote;
-  List<Widget> children;
+  List<Position> positions;
+  List<Widget> childr;
   final CanvasBackground canvasBackground;
 
   _CanvasRenderObject({
     required this.offset,
-    required this.rootNote,
-    required this.children,
+    required this.positions,
+    required this.childr,
     required this.canvasBackground,
     super.key,
-  }) : super(children: children);
+  }) : super(children: childr);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _CanvasRenderBox(offset: offset, rootNote: rootNote, canvasBackground: canvasBackground);
+    return _CanvasRenderBox(offset: offset, positions: positions, canvasBackground: canvasBackground);
   }
 
   @override
   void updateRenderObject(BuildContext context, _CanvasRenderBox renderObject) {
     renderObject
       ..offset = offset
-      ..rootNote = rootNote;
+      ..positions = positions;
   }
 }
 
@@ -168,11 +161,11 @@ class _CanvasRenderBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, _CanvasParentData> {
   CanvasBackground canvasBackground;
   Offset _offset;
-  Note _rootNote;
+  List<Position> _positions;
 
-  _CanvasRenderBox({required Offset offset, required Note rootNote, required this.canvasBackground})
+  _CanvasRenderBox({required positions, required offset, required this.canvasBackground})
       : _offset = offset,
-        _rootNote = rootNote;
+        _positions = positions;
 
   set offset(Offset value) {
     if (_offset == value) return;
@@ -180,9 +173,11 @@ class _CanvasRenderBox extends RenderBox
     markNeedsPaint();
   }
 
-  set rootNote(Note value) {
-    if (_rootNote == value) return;
-    _rootNote = value;
+  set positions(List<Position> value) {
+    // if (_positions == value) return;
+
+    // lg.i("setting positions to $value");
+    _positions = value;
     markNeedsLayout();
   }
 
@@ -198,12 +193,9 @@ class _CanvasRenderBox extends RenderBox
     size = constraints.biggest;
 
     RenderBox? child = firstChild;
-    Offset childOffset = Offset(size.width / 2, size.height / 2);
     while (child != null) {
       final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
-      child.layout(constraints.loosen(), parentUsesSize: true);
-      childParentData.offset = childOffset;
-      childOffset += Offset(0, child.size.height); // Add some vertical spacing between notes
+      child.layout(constraints.loosen(), parentUsesSize: false);
       child = childParentData.nextSibling;
     }
   }
@@ -211,28 +203,32 @@ class _CanvasRenderBox extends RenderBox
   @override
   void paint(PaintingContext context, Offset canvasStartOffset) {
     final canvas = context.canvas;
-    canvas.translate(canvasStartOffset.dx, canvasStartOffset.dy);
+    // canvas.translate(canvasStartOffset.dx, canvasStartOffset.dy);
 
     canvasBackground.paint(context, _offset, size);
 
+    // lg.i('paint ${_positions}');
+
     RenderBox? child = firstChild;
+    int idx = 0;
     while (child != null) {
       final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
-      context.paintChild(child, _offset + childParentData.offset);
+      context.paintChild(child, _offset + _positions[idx].toOffset());
       child = childParentData.nextSibling;
+      idx++;
     }
   }
 
-  @override
-  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
-    RenderBox? child = lastChild;
-    while (child != null) {
-      final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
-      if (child.hitTest(result, position: position - childParentData.offset)) {
-        return true;
-      }
-      child = childParentData.previousSibling;
-    }
-    return false;
-  }
+  // @override
+  // bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+  //   RenderBox? child = lastChild;
+  //   while (child != null) {
+  //     final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
+  //     if (child.hitTest(result, position: position - childParentData.offset)) {
+  //       return true;
+  //     }
+  //     child = childParentData.previousSibling;
+  //   }
+  //   return false;
+  // }
 }
