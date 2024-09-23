@@ -75,13 +75,11 @@ class PositionController extends GetxController {
       _positions.add(curPos);
 
       // stop if note is out of bounds
-      final extra = Offset.zero;
-      final onScreen = offset.value + curPos.toOffset();
+      final extra = Offset(400, 400);
+      final onScreen = curPos.toOffset();
       Offset topLeft = offset.value - extra;
       Offset bottomRight = offset.value + Offset(screen.width, screen.height) + extra;
-      // lg.i('onScreen: $onScreen');
-      // lg.i('topLeft: $topLeft');
-      // lg.i('bottomRight: $bottomRight');
+      // lg.i('onScreen: $onScreen topLeft: $topLeft bottomRight: $bottomRight');
       //if this point in the rect
       if (onScreen.dx < topLeft.dx ||
           onScreen.dx > bottomRight.dx ||
