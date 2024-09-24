@@ -47,7 +47,8 @@ class PositionController extends GetxController {
   Note sourceNote;
   Position sourcePosition; // at (0,0) offset whats gonna be the source position
 
-  final noteSize = const Size(120, 80);
+  final noteSize = const Size(200, 100);
+  final padding = 20.0;
   final Size screen;
 
   PositionController({required this.sourceNote, required this.sourcePosition, required this.screen}) {
@@ -90,22 +91,22 @@ class PositionController extends GetxController {
 
       // up
       if (curNote.hasUp && !visited.contains(curNote.up)) {
-        stack.add((curNote.up as Note, curPos - Position(0, noteSize.height)));
+        stack.add((curNote.up as Note, curPos - Position(0, noteSize.height + padding)));
       }
 
       // down
       if (curNote.hasDown && !visited.contains(curNote.down)) {
-        stack.add((curNote.down as Note, curPos + Position(0, noteSize.height)));
+        stack.add((curNote.down as Note, curPos + Position(0, noteSize.height + padding)));
       }
 
       // left
       if (curNote.hasLeft && !visited.contains(curNote.left)) {
-        stack.add((curNote.left as Note, curPos - Position(noteSize.width, 0)));
+        stack.add((curNote.left as Note, curPos - Position(noteSize.width + padding, 0)));
       }
 
       // right
       if (curNote.hasRight && !visited.contains(curNote.right)) {
-        stack.add((curNote.right as Note, curPos + Position(noteSize.width, 0)));
+        stack.add((curNote.right as Note, curPos + Position(noteSize.width + padding, 0)));
       }
     }
 

@@ -12,6 +12,7 @@ import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/markdown/split_pane_editor.dart';
 import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
+import 'package:local_tl_app/screens/create_note.dart';
 import 'package:local_tl_app/screens/ui_test.dart';
 
 import 'screens/home.dart';
@@ -32,13 +33,13 @@ class _AppState extends State<App> {
         PositionController(sourceNote: root, sourcePosition: Position(0, 200), screen: MediaQuery.of(context).size));
     return Obx(
       () => GetMaterialApp(
-        showPerformanceOverlay: true,
+        // showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
           colorScheme: ThemeController.to.colorScheme,
         ),
-        home: CanvasView(),
+        home: CreateNote(),
       ),
     );
   }

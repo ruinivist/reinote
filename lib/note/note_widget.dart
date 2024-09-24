@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_tl_app/controllers/position_controller.dart';
 
 import 'note_model.dart';
 
@@ -14,8 +15,8 @@ class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120,
-      height: 80,
+      width: PositionController.to.noteSize.width,
+      height: PositionController.to.noteSize.height,
       child: GestureDetector(
         onTap: () {},
         child: Card(
