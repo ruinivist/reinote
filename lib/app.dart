@@ -14,6 +14,7 @@ import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
 import 'package:local_tl_app/screens/ui_test.dart';
+import 'package:local_tl_app/widgets/editor/md_config.dart';
 
 import 'screens/home.dart';
 import 'utils/log.dart';
@@ -39,7 +40,10 @@ class _AppState extends State<App> {
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
           colorScheme: ThemeController.to.colorScheme,
         ),
-        home: CreateNote(),
+        home: Builder(builder: (context) {
+          Get.put(MdConfig.defaults());
+          return CreateNote();
+        }),
       ),
     );
   }

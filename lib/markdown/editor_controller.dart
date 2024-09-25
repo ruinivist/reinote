@@ -7,8 +7,9 @@ class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
   ScrollController scrollController = ScrollController();
+  TextEditingController controller = TextEditingController();
 
-  final _mdText = RxString(_dummyMarkdown);
+  final _mdText = RxString("");
 
   String get markdownText => _mdText.value;
 
