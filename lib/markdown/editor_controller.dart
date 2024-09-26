@@ -7,7 +7,7 @@ class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
   ScrollController scrollController = ScrollController();
-  TextEditingController controller = TextEditingController();
+  TextEditingController textEditingController = TextEditingController();
 
   final _mdText = RxString("");
 

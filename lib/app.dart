@@ -42,7 +42,7 @@ class _AppState extends State<App> {
         ),
         home: Builder(builder: (context) {
           Get.put(MdConfig.defaults());
-          return CreateNote();
+          return MyruiadOfButtojns();
         }),
       ),
     );
@@ -89,7 +89,7 @@ class MyruiadOfButtojns extends StatelessWidget {
               final x = await fs.listFilesRecursively();
               lg.i(x);
             },
-            child: Text("sd"),
+            child: Text("show path"),
           ),
           TextButton(
             onPressed: () async {

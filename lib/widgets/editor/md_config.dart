@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 
 class MdConfig extends GetxController {
@@ -21,4 +22,11 @@ class MdConfig extends GetxController {
   TextStyle get h2 => _h2.value;
   TextStyle get h3 => _h3.value;
   TextStyle get body => _body.value;
+
+  MarkdownStyleSheet get styleSheet => MarkdownStyleSheet(
+        h1: h1,
+        h2: h2,
+        h3: h3,
+        p: body,
+      );
 }

@@ -1,17 +1,20 @@
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_tl_app/markdown/editor_controller.dart';
 
 import '../md_config.dart';
 
 /// this widget expands so sizes must be set by parent
+/// this must be rendered within context of an EditorController
 class InlinePreviewEditor extends StatelessWidget {
   const InlinePreviewEditor({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ExtendedTextField(
-      controller: TextEditingController(text: ""),
+      controller: EditorController.to.textEditingController,
+      scrollController: EditorController.to.scrollController,
       maxLines: null,
       expands: true,
       cursorColor: Colors.red,
@@ -153,11 +156,11 @@ class HorizontalRule extends RegExpSpecialText {
     TextStyle? textStyle,
     SpecialTextGestureTapCallback? onTap,
   }) {
-    return ExtendedWidgetSpan(
+    return SpecialTextSpan(
       actualText: match[0]!,
+      text: match[0]!,
       start: start,
-      style: textStyle!,
-      child: const Divider(),
+      style: textStyle!.copyWith(color: Colors.grey),
       deleteAll: false,
     );
   }

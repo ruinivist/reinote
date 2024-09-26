@@ -3,6 +3,8 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:get/get.dart';
 
+import '../utils/log.dart';
+
 class FileSystemController extends GetxController {
   static FileSystemController get to => Get.find();
 
@@ -15,8 +17,9 @@ class FileSystemController extends GetxController {
   }
 
   Future<void> _initializeDirectory() async {
-    final appDocDir = await getDownloadsDirectory();
+    final appDocDir = await getApplicationDocumentsDirectory();
     _localTlDirectory = Directory(path.join(appDocDir!.path, 'local_tl'));
+    lg.i(_localTlDirectory.path);
     if (!await _localTlDirectory.exists()) {
       await _localTlDirectory.create(recursive: true);
     }
