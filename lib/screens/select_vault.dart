@@ -1,14 +1,18 @@
 import 'dart:ui';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
+import 'package:local_tl_app/controllers/filesystem.dart';
 import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
+import 'package:local_tl_app/utils/snackbars.dart';
 import 'package:local_tl_app/widgets/rn_container.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/log.dart';
+import '../widgets/backround_painters.dart';
 
 class SelectVault extends StatefulWidget {
   const SelectVault({super.key});
@@ -39,9 +43,25 @@ class _SelectVaultState extends State<SelectVault> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () async {}),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          Get.dialog(
+            const AlertDialog(
+              title: Text("ReiNote"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text("v 0.1"),
+                  Text("idk how but its gonna be cool hopefully"),
+                ],
+              ),
+            ),
+          );
+        },
+        child: const Icon(Icons.info_outline),
+      ),
       body: CustomPaint(
-        painter: GridPainter(background: background, animation: _animation),
+        painter: AnimatedOffsetBackground(background: background, animation: _animation),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
@@ -108,7 +128,18 @@ class _SelectVaultState extends State<SelectVault> with SingleTickerProviderStat
                           ),
                           const SizedBox(height: 8),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
+                              if (selectedDirectory != null) {
+                                FileSystemController.to.vaultPath = selectedDirectory;
+                                Get.offNamed("/home");
+                              } else {
+                                Snackbars.error(
+                                  title: "No directory selected",
+                                  message: "Select a directory to continue",
+                                );
+                              }
+                            },
                             child: const Text("Open folder"),
                           ),
                         ],
@@ -122,22 +153,5 @@ class _SelectVaultState extends State<SelectVault> with SingleTickerProviderStat
         ),
       ),
     );
-  }
-}
-
-class GridPainter extends CustomPainter {
-  final CanvasBackground background;
-  final Animation<Offset> animation;
-
-  GridPainter({required this.background, required this.animation}) : super(repaint: animation);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    background.paint(canvas, animation.value, size);
-  }
-
-  @override
-  bool shouldRepaint(covariant GridPainter oldDelegate) {
-    return oldDelegate.animation.value != animation.value;
   }
 }

@@ -10,15 +10,15 @@ import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
-import 'package:local_tl_app/markdown/split_pane_editor.dart';
 import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
+import 'package:local_tl_app/screens/home.dart';
 import 'package:local_tl_app/screens/select_vault.dart';
 import 'package:local_tl_app/screens/ui_test.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
+import 'package:local_tl_app/widgets/transitions/sharex_axis_page_transition.dart';
 
-import 'screens/home_old.dart';
 import 'utils/log.dart';
 
 class App extends StatefulWidget {
@@ -33,6 +33,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     Get.put(ThemeController());
     Get.put(PermissionsController());
+    Get.put(FileSystemController());
     Get.put(
         PositionController(sourceNote: root, sourcePosition: Position(0, 200), screen: MediaQuery.of(context).size));
     return Obx(
@@ -49,10 +50,27 @@ class _AppState extends State<App> {
           ),
           colorScheme: ThemeController.to.colorScheme,
         ),
-        home: Builder(builder: (context) {
-          Get.put(MdConfig.defaults());
-          return const SelectVault();
-        }),
+        home: Builder(
+          builder: (context) {
+            // this is separate so that it has the context that has theme data
+            Get.put(MdConfig.defaults());
+
+            if (FileSystemController.to.hasVault) {
+              return const Home();
+            } else {
+              return const SelectVault();
+            }
+          },
+        ),
+        getPages: [
+          GetPage(name: Home.routeName, page: () => const Home()),
+          GetPage(
+            name: CreateNote.routeName,
+            page: () => const CreateNote(),
+            customTransition: SharedAxisPageTransition(),
+            transitionDuration: const Duration(milliseconds: 300),
+          ),
+        ],
       ),
     );
   }
@@ -76,7 +94,7 @@ class SampleScaffold extends StatelessWidget {
           // ),
         ],
       ),
-      body: SplitPaneEditor(),
+      body: Container(),
     );
   }
 }

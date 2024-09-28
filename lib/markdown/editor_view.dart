@@ -9,21 +9,17 @@ import '../utils/log.dart';
 class EditorView extends StatelessWidget {
   // passing it directly because magic where the widget picks up automatically from god knows where ( as in Get.find )
   // would make thins harder to understand
-  final EditorController controller;
-
-  const EditorView({super.key, required this.controller});
+  final String text;
+  const EditorView({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Markdown(
-        controller: controller.scrollController,
-        selectable: true,
-        data: controller.markdownText,
-        extensionSet: md.ExtensionSet(
-          md.ExtensionSet.gitHubFlavored.blockSyntaxes,
-          <md.InlineSyntax>[md.EmojiSyntax(), ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes],
-        ),
+    return Markdown(
+      selectable: true,
+      data: text,
+      extensionSet: md.ExtensionSet(
+        md.ExtensionSet.gitHubFlavored.blockSyntaxes,
+        <md.InlineSyntax>[md.EmojiSyntax(), ...md.ExtensionSet.gitHubFlavored.inlineSyntaxes],
       ),
     );
   }

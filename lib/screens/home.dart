@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'create_note.dart';
 
 /// check if a vault exists and create one here
 /// otherwise this is the feed
 class Home extends StatefulWidget {
+  static const routeName = '/home';
   const Home({super.key});
 
   @override
@@ -12,6 +16,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.toNamed(CreateNote.routeName);
+        },
+        child: const Icon(Icons.add),
+      ),
+    );
   }
 }

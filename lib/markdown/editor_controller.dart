@@ -7,15 +7,17 @@ class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
   ScrollController scrollController = ScrollController();
-  TextEditingController textEditingController = TextEditingController();
+  TextEditingController textEditingController = TextEditingController(text: '');
 
-  final _mdText = RxString("");
+  final _text = ''.obs;
+  String get text => _text.value;
 
-  String get markdownText => _mdText.value;
-
-  void updateText(String text) {
-    lg.d("md text updated");
-    _mdText.value = text;
+  @override
+  void onInit() {
+    super.onInit();
+    textEditingController.addListener(() {
+      _text.value = textEditingController.text;
+    });
   }
 }
 

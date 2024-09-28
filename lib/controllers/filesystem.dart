@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:get_storage/get_storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:get/get.dart';
@@ -8,12 +9,26 @@ import '../utils/log.dart';
 class FileSystemController extends GetxController {
   static FileSystemController get to => Get.find();
 
+  final localStore = GetStorage();
+  final kVaultPath = 'vaultPath';
+
+  String? _vaultPath;
+  String? get vaultPath => _vaultPath;
+  bool get hasVault => _vaultPath != null;
+
+  set vaultPath(String? value) {
+    _vaultPath = value;
+    localStore.write(kVaultPath, value);
+    lg.i('Vault path set to: $value');
+  }
+
   late Directory _localTlDirectory;
 
   @override
   void onInit() {
     super.onInit();
     _initializeDirectory();
+    _vaultPath = localStore.read<String>(kVaultPath);
   }
 
   Future<void> _initializeDirectory() async {
