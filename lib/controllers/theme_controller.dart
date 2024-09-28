@@ -15,4 +15,11 @@ class ThemeController extends GetxController {
     _colorScheme.value = ColorScheme.fromSeed(seedColor: seedColor);
     return _colorScheme.value;
   }
+
+  static const containerPadding = EdgeInsets.all(16.0);
+  static const containerBorderRadius = BorderRadius.all(Radius.circular(16.0));
+  static const edgePadding = EdgeInsets.symmetric(horizontal: 8.0);
+  static const defaultBoxDecoration = BoxDecoration(
+    borderRadius: containerBorderRadius,
+  );
 }

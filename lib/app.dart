@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
 import 'package:local_tl_app/controllers/filesystem.dart';
+import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
@@ -13,10 +14,11 @@ import 'package:local_tl_app/markdown/split_pane_editor.dart';
 import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
+import 'package:local_tl_app/screens/select_vault.dart';
 import 'package:local_tl_app/screens/ui_test.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
 
-import 'screens/home.dart';
+import 'screens/home_old.dart';
 import 'utils/log.dart';
 
 class App extends StatefulWidget {
@@ -30,6 +32,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     Get.put(ThemeController());
+    Get.put(PermissionsController());
     Get.put(
         PositionController(sourceNote: root, sourcePosition: Position(0, 200), screen: MediaQuery.of(context).size));
     return Obx(
@@ -37,12 +40,18 @@ class _AppState extends State<App> {
         // showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          textTheme: GoogleFonts.jetBrainsMonoTextTheme(),
+          textTheme: GoogleFonts.jetBrainsMonoTextTheme(
+            const TextTheme(
+              headlineLarge: TextStyle(fontSize: 22),
+              headlineMedium: TextStyle(fontSize: 20),
+              headlineSmall: TextStyle(fontSize: 18),
+            ),
+          ),
           colorScheme: ThemeController.to.colorScheme,
         ),
         home: Builder(builder: (context) {
           Get.put(MdConfig.defaults());
-          return MyruiadOfButtojns();
+          return const SelectVault();
         }),
       ),
     );
