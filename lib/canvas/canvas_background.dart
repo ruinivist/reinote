@@ -7,7 +7,7 @@ abstract class CanvasBackground {
 
   /// draw the backround on this context. Implement this to have
   /// different kinds of backgrounds
-  void paint(PaintingContext context, Offset offset, Size canvasSize);
+  void paint(Canvas canvas, Offset offset, Size canvasSize);
 }
 
 class DotGridBackround extends CanvasBackground {
@@ -22,8 +22,7 @@ class DotGridBackround extends CanvasBackground {
   }) : super();
 
   @override
-  void paint(PaintingContext context, Offset offset, Size canvasSize) {
-    final canvas = context.canvas;
+  void paint(Canvas canvas, Offset offset, Size canvasSize) {
     final paint = Paint()
       ..color = color
       ..strokeWidth = 1.0;
@@ -43,5 +42,5 @@ class NoBackground extends CanvasBackground {
   const NoBackground();
 
   @override
-  void paint(PaintingContext context, Offset offset, Size canvasSize) {}
+  void paint(Canvas canvas, Offset offset, Size canvasSize) {}
 }

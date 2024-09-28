@@ -205,7 +205,7 @@ class _CanvasRenderBox extends RenderBox
     final canvas = context.canvas;
     // canvas.translate(canvasStartOffset.dx, canvasStartOffset.dy);
 
-    canvasBackground.paint(context, _offset, size);
+    canvasBackground.paint(canvas, _offset, size);
 
     // lg.i('paint ${_positions}');
 
