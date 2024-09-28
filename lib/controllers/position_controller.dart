@@ -9,10 +9,12 @@ class Position {
   final double x;
   final double y;
 
-  Position(this.x, this.y);
+  const Position(this.x, this.y);
   Position.fromOffset(Offset offset)
       : x = offset.dx,
         y = offset.dy;
+
+  static const zero = Position(0, 0);
 
   Position operator +(Position other) {
     return Position(x + other.x, y + other.y);
@@ -40,30 +42,47 @@ class Position {
 
 // todo: this probably does not need to extend this
 // assumes the source at (0,0) and then calculates the position of everything else
+/// just initialise it correctly with sources and set offset
+/// rest will fall into place
 class PositionController extends GetxController {
   static PositionController get to => Get.find();
 
-  Rx<Offset> offset = Offset.zero.obs;
-  Note sourceNote;
-  Position sourcePosition; // at (0,0) offset whats gonna be the source position
-
-  final noteSize = const Size(200, 100);
-  final padding = 20.0;
-  final Size screen;
-
-  PositionController({required this.sourceNote, required this.sourcePosition, required this.screen}) {
+  Offset _offset = Offset.zero;
+  Offset get offset => _offset;
+  set offset(Offset value) {
+    if (_offset == value) return;
+    _offset = value;
+    _setNewSource();
     _buildPositions();
   }
 
-  late List<Position> _positions;
-  late List<Note> _notes;
+  NoteBase _sourceNote;
+  Position _sourcePosition; // at (0,0) offset whats gonna be the source position
+
+  final noteSize = const Size(400, 300);
+  final padding = 20.0;
+  final Size screen;
+
+  PositionController({required NoteBase sourceNote, required Position sourcePosition, required this.screen})
+      : _sourcePosition = sourcePosition,
+        _sourceNote = sourceNote {
+    _buildPositions();
+  }
+
+  final _positions = <Position>[].obs;
+  final _notes = <Note>[].obs;
 
   void _buildPositions() {
-    // lg.i('building positions');
-    _positions = [];
-    _notes = [];
+    if (_sourceNote is NoNote) {
+      _positions.clear();
+      _notes.clear();
+      return;
+    }
 
-    List<(Note, Position)> stack = [(sourceNote, sourcePosition)];
+    List<Position> positions = [];
+    List<Note> notes = [];
+
+    List<(Note, Position)> stack = [(_sourceNote as Note, _sourcePosition)];
     Set<Note> visited = {};
 
     while (stack.isNotEmpty) {
@@ -72,15 +91,14 @@ class PositionController extends GetxController {
       final (curNote, curPos) = current;
       visited.add(curNote);
 
-      _notes.add(curNote);
-      _positions.add(curPos);
+      notes.add(curNote);
+      positions.add(curPos);
 
       // stop if note is out of bounds
-      final extra = Offset(400, 400);
+      const extra = Offset(400, 400);
       final onScreen = curPos.toOffset();
-      Offset topLeft = offset.value - extra;
-      Offset bottomRight = offset.value + Offset(screen.width, screen.height) + extra;
-      // lg.i('onScreen: $onScreen topLeft: $topLeft bottomRight: $bottomRight');
+      Offset topLeft = offset - extra;
+      Offset bottomRight = offset + Offset(screen.width, screen.height) + extra;
       //if this point in the rect
       if (onScreen.dx < topLeft.dx ||
           onScreen.dx > bottomRight.dx ||
@@ -110,7 +128,8 @@ class PositionController extends GetxController {
       }
     }
 
-    // lg.i('Positions: $_positions');
+    _positions.value = positions;
+    _notes.value = notes;
   }
 
   List<Position> get positions => _positions;
@@ -122,16 +141,14 @@ class PositionController extends GetxController {
           ))
       .toList();
 
-  late Worker onOffsetChange;
-
-  Offset get center => offset.value + Offset(Get.width / 2, Get.height / 2);
+  Offset get center => offset + Offset(Get.width / 2, Get.height / 2);
 
   void _setNewSource() {
+    if (_sourceNote is NoNote) return;
     // even when the offset changes the positions which are in ref to the (0,0)
     // will remain the same
 
     // find the index of the note which is closest to the center (euclidean distance)
-
     assert(_positions.isNotEmpty);
 
     final mid = Position.fromOffset(center);
@@ -146,19 +163,17 @@ class PositionController extends GetxController {
       }
     }
 
-    sourceNote = _notes[minIndex];
-    sourcePosition = _positions[minIndex];
+    _sourceNote = _notes[minIndex];
+    _sourcePosition = _positions[minIndex];
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-
-    onOffsetChange = ever(offset, (_) {
-      // lg.i('Offset: $offset');
-      // lg.i('Center: $center');
-      _setNewSource();
-      _buildPositions();
-    });
+  /// restart afresh with new source
+  void resetSource(Note sourceNote, Position sourcePosition, {Offset? offset}) {
+    _sourceNote = sourceNote;
+    _sourcePosition = sourcePosition;
+    if (offset != null) {
+      _offset = offset;
+    }
+    _buildPositions();
   }
 }

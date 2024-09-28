@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_tl_app/canvas/canvas_view.dart';
 
+import '../controllers/position_controller.dart';
 import 'create_note.dart';
 
 /// check if a vault exists and create one here
@@ -14,6 +16,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final posCont = PositionController.to;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,6 +26,17 @@ class _HomeState extends State<Home> {
           Get.toNamed(CreateNote.routeName);
         },
         child: const Icon(Icons.add),
+      ),
+      // TODO: there's a 2x render bug here, see similar comment in Canvas view
+      // you need to make the offset state common
+      body: Obx(
+        () => CanvasView(
+          positions: posCont.positions,
+          onOffsetChange: (offset) {
+            posCont.offset = -offset;
+          },
+          children: posCont.children,
+        ),
       ),
     );
   }

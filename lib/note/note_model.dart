@@ -15,7 +15,7 @@ class NoNote extends NoteBase {
 
 class Note extends NoteBase {
   final String title;
-  final String description;
+  final String content;
 
   bool get hasRight => right is! NoNote;
   bool get hasLeft => left is! NoNote;
@@ -29,7 +29,7 @@ class Note extends NoteBase {
 
   Note({
     required this.title,
-    required this.description,
+    required this.content,
   });
   // todo: add check so as this doesn't overwrite existing connections
   void connectRight(Note note) {

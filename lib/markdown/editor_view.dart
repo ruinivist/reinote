@@ -15,6 +15,7 @@ class EditorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Markdown(
+      // physics: const NeverScrollableScrollPhysics(),
       selectable: true,
       data: text,
       extensionSet: md.ExtensionSet(

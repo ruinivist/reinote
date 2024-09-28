@@ -7,9 +7,9 @@ class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
   ScrollController scrollController = ScrollController();
-  TextEditingController textEditingController = TextEditingController(text: '');
+  TextEditingController textEditingController = TextEditingController(text: _dummyMarkdown);
 
-  final _text = ''.obs;
+  final _text = _dummyMarkdown.obs;
   String get text => _text.value;
 
   @override
@@ -41,6 +41,4 @@ void main() {
   print('Hello, World!');
 }
 ```
-
-[Link](https://example.com)
 ''';

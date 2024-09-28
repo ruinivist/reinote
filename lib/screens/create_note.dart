@@ -3,12 +3,14 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
+import 'package:local_tl_app/controllers/note_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/note/note_utils.dart';
 import 'package:local_tl_app/widgets/editor/inline_preview_editor/inline_preview_editor.dart';
 
 import '../controllers/theme_controller.dart';
 import '../markdown/editor_controller.dart';
+import '../note/note_model.dart';
 import '../utils/log.dart';
 
 class CreateNote extends StatefulWidget {
@@ -24,20 +26,9 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
 
   @override
   void dispose() {
-    // _tabController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
-  //  SizedBox(
-  //           height: 100,
-  //           width: 200,
-  //           child: TabBar(
-  //             controller: _tabController,
-  //             tabs: const [
-  //               Tab(text: 'Edit', icon: Icon(Icons.edit)),
-  //               Tab(text: 'Preview', icon: Icon(Icons.preview)),
-  //             ],
-  //           ),
-  //         ),
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +36,17 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            NoteController.to.debugInitWithOneNote(
+              Note(
+                title: "New Note",
+                content: EditorController.to.text,
+              ),
+            );
+          },
+          child: const Icon(Icons.add),
+        ),
         body: CustomScrollView(
           hitTestBehavior: HitTestBehavior.deferToChild,
           slivers: <Widget>[

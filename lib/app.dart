@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
 import 'package:local_tl_app/controllers/filesystem.dart';
+import 'package:local_tl_app/controllers/note_controller.dart';
 import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
@@ -35,7 +36,13 @@ class _AppState extends State<App> {
     Get.put(PermissionsController());
     Get.put(FileSystemController());
     Get.put(
-        PositionController(sourceNote: root, sourcePosition: Position(0, 200), screen: MediaQuery.of(context).size));
+      PositionController(
+        sourceNote: const NoNote(),
+        sourcePosition: Position.zero,
+        screen: MediaQuery.of(context).size,
+      ),
+    );
+    Get.put(NoteController());
     return Obx(
       () => GetMaterialApp(
         // showPerformanceOverlay: true,
