@@ -4,47 +4,34 @@ import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 
 /// no magic deps except what you pass
-class CanvasView extends StatefulWidget {
-  final Function(Offset) onOffsetChange;
+class CanvasView extends StatelessWidget {
+  final Offset offset;
   final List<Position> positions;
   final List<Widget> children;
   final CanvasBackground canvasBackground;
+  final void Function(DragUpdateDetails details) handlePanUpdate;
 
   const CanvasView({
     required this.children,
     required this.positions,
-    required this.onOffsetChange,
+    required this.offset,
+    required this.handlePanUpdate,
     this.canvasBackground = const DotGridBackround(),
     super.key,
   });
 
   @override
-  State<CanvasView> createState() => _CanvasViewState();
-}
-
-class _CanvasViewState extends State<CanvasView> with SingleTickerProviderStateMixin {
-  Offset _offset = Offset.zero;
-
-  void _handlePanUpdate(DragUpdateDetails details) {
-    setState(() {
-      _offset += details.delta;
-      // TODO: i think this causes a 2x render bug
-      widget.onOffsetChange(_offset);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.canvasBackground.baseColor,
+      color: canvasBackground.baseColor,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onPanUpdate: _handlePanUpdate,
+        onPanUpdate: handlePanUpdate,
         child: _CanvasRenderObject(
-          offset: _offset,
-          positions: widget.positions,
-          canvasBackground: widget.canvasBackground,
-          children: widget.children,
+          offset: offset,
+          positions: positions,
+          canvasBackground: canvasBackground,
+          children: children,
         ),
       ),
     );

@@ -45,7 +45,7 @@ class _AppState extends State<App> {
     Get.put(NoteController());
     return Obx(
       () => GetMaterialApp(
-        // showPerformanceOverlay: true,
+        showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(

@@ -32,8 +32,9 @@ class _HomeState extends State<Home> {
       body: Obx(
         () => CanvasView(
           positions: posCont.positions,
-          onOffsetChange: (offset) {
-            posCont.offset = -offset;
+          offset: -posCont.offset,
+          handlePanUpdate: (details) {
+            posCont.offset -= details.delta;
           },
           children: posCont.children,
         ),
