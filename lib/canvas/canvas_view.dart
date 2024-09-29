@@ -9,13 +9,17 @@ class CanvasView extends StatelessWidget {
   final List<Position> positions;
   final List<Widget> children;
   final CanvasBackground canvasBackground;
-  final void Function(DragUpdateDetails details) handlePanUpdate;
+  final double scale;
+  final void Function(ScaleUpdateDetails details) handleScaleUpdate;
+  final void Function(ScaleStartDetails details) handleScaleStart;
 
   const CanvasView({
     required this.children,
     required this.positions,
     required this.offset,
-    required this.handlePanUpdate,
+    required this.scale,
+    required this.handleScaleUpdate,
+    required this.handleScaleStart,
     this.canvasBackground = const DotGridBackround(),
     super.key,
   });
@@ -26,9 +30,11 @@ class CanvasView extends StatelessWidget {
       color: canvasBackground.baseColor,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onPanUpdate: handlePanUpdate,
+        onScaleUpdate: handleScaleUpdate,
+        onScaleStart: handleScaleStart,
         child: _CanvasRenderObject(
           offset: offset,
+          scale: scale,
           positions: positions,
           canvasBackground: canvasBackground,
           children: children,
@@ -40,12 +46,14 @@ class CanvasView extends StatelessWidget {
 
 class _CanvasRenderObject extends MultiChildRenderObjectWidget {
   final Offset offset;
+  final double scale;
 
   final List<Position> positions;
   final CanvasBackground canvasBackground;
 
   const _CanvasRenderObject({
     required this.offset,
+    required this.scale,
     required this.positions,
     required super.children,
     required this.canvasBackground,
@@ -53,14 +61,15 @@ class _CanvasRenderObject extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return _CanvasRenderBox(offset: offset, positions: positions, canvasBackground: canvasBackground);
+    return _CanvasRenderBox(offset: offset, scale: scale, positions: positions, canvasBackground: canvasBackground);
   }
 
   @override
   void updateRenderObject(BuildContext context, _CanvasRenderBox renderObject) {
     renderObject
       ..offset = offset
-      ..positions = positions;
+      ..positions = positions
+      ..scale = scale;
   }
 }
 
@@ -72,11 +81,13 @@ class _CanvasRenderBox extends RenderBox
         RenderBoxContainerDefaultsMixin<RenderBox, _CanvasParentData> {
   CanvasBackground canvasBackground;
   Offset _offset;
+  double _scale;
   List<Position> _positions;
 
-  _CanvasRenderBox({required positions, required offset, required this.canvasBackground})
+  _CanvasRenderBox({required positions, required offset, required scale, required this.canvasBackground})
       : _offset = offset,
-        _positions = positions;
+        _positions = positions,
+        _scale = scale;
 
   set offset(Offset value) {
     if (_offset == value) return;
@@ -88,6 +99,12 @@ class _CanvasRenderBox extends RenderBox
     if (_positions == value) return;
     _positions = value;
     markNeedsLayout();
+  }
+
+  set scale(double value) {
+    if (_scale == value) return;
+    _scale = value;
+    markNeedsPaint();
   }
 
   @override
@@ -113,7 +130,7 @@ class _CanvasRenderBox extends RenderBox
   void paint(PaintingContext context, Offset canvasStartOffset) {
     final canvas = context.canvas;
 
-    canvasBackground.paint(canvas, _offset, size);
+    canvasBackground.paint(canvas, _offset, _scale, size);
 
     RenderBox? child = firstChild;
     for (int idx = 0; child != null; idx++) {

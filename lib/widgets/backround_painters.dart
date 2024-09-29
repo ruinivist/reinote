@@ -10,7 +10,7 @@ class AnimatedOffsetBackground extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    background.paint(canvas, animation.value, size);
+    background.paint(canvas, animation.value, 1.0, size);
   }
 
   @override

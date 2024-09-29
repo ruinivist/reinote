@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
 
 import '../controllers/position_controller.dart';
+import '../utils/log.dart';
 import 'create_note.dart';
 
 /// check if a vault exists and create one here
@@ -32,10 +33,10 @@ class _HomeState extends State<Home> {
       body: Obx(
         () => CanvasView(
           positions: posCont.positions,
-          offset: -posCont.offset,
-          handlePanUpdate: (details) {
-            posCont.offset -= details.delta;
-          },
+          offset: posCont.offset,
+          scale: posCont.scale,
+          handleScaleUpdate: posCont.handleScaleUpdate,
+          handleScaleStart: posCont.handleScaleStart,
           children: posCont.children,
         ),
       ),

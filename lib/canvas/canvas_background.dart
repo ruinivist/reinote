@@ -7,7 +7,7 @@ abstract class CanvasBackground {
 
   /// draw the backround on this context. Implement this to have
   /// different kinds of backgrounds
-  void paint(Canvas canvas, Offset offset, Size canvasSize);
+  void paint(Canvas canvas, Offset offset, double scale, Size canvasSize);
 }
 
 class DotGridBackround extends CanvasBackground {
@@ -22,17 +22,19 @@ class DotGridBackround extends CanvasBackground {
   }) : super();
 
   @override
-  void paint(Canvas canvas, Offset offset, Size canvasSize) {
+  void paint(Canvas canvas, Offset offset, double scale, Size canvasSize) {
     final paint = Paint()
       ..color = color
-      ..strokeWidth = 1.0;
+      ..strokeWidth = 1.0 * scale;
+    double scaledSpacing = spacing * scale;
+    double scaledSize = size * scale;
 
-    double startX = (offset.dx % spacing) - spacing;
-    double startY = (offset.dy % spacing) - spacing;
+    double startX = (offset.dx % scaledSpacing) - scaledSpacing;
+    double startY = (offset.dy % scaledSpacing) - scaledSpacing;
 
-    for (double x = startX; x < canvasSize.width + spacing; x += spacing) {
-      for (double y = startY; y < canvasSize.height + spacing; y += spacing) {
-        canvas.drawCircle(Offset(x, y), size, paint);
+    for (double x = startX; x < canvasSize.width + scaledSpacing; x += scaledSpacing) {
+      for (double y = startY; y < canvasSize.height + scaledSpacing; y += scaledSpacing) {
+        canvas.drawCircle(Offset(x, y), scaledSize, paint);
       }
     }
   }
@@ -42,5 +44,5 @@ class NoBackground extends CanvasBackground {
   const NoBackground();
 
   @override
-  void paint(Canvas canvas, Offset offset, Size canvasSize) {}
+  void paint(Canvas canvas, Offset offset, double scale, Size canvasSize) {}
 }

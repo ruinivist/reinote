@@ -49,9 +49,41 @@ class PositionController extends GetxController {
 
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
-  set offset(Offset value) {
-    if (_offset == value) return;
-    _offset = value;
+  double _scale = 1.0;
+  double get scale => _scale;
+
+  Offset? _lastFocalPoint;
+
+  void handleScaleStart(ScaleStartDetails details) {
+    _lastFocalPoint = details.localFocalPoint;
+  }
+
+  /// name is a bit misleading but this is what flutter uses and
+  /// this is a superset of pan so handles both pan and scale
+  void handleScaleUpdate(ScaleUpdateDetails details) {
+    // dampended new scale
+    // double dampeningFactor = 0.1;
+    // double scaleDelta = (details.scale - 1) * dampeningFactor;
+    // double newScale = _scale * (1 + scaleDelta);
+    // newScale = newScale.clamp(0.1, 10.0);
+    final newScale = (_scale * details.scale).clamp(0.4, 4.0);
+
+    // focal point in the coordinate system of the grid
+    Offset focalPoint = details.localFocalPoint;
+    Offset gridFocalPoint = (focalPoint - _offset) / _scale;
+
+    // new scale set
+    _scale = newScale;
+
+    // adjust offset to keep the focal point stationary
+    _offset = focalPoint - gridFocalPoint * _scale;
+
+    // panning
+    if (_lastFocalPoint != null) {
+      _offset += details.localFocalPoint - _lastFocalPoint!;
+    }
+    _lastFocalPoint = details.focalPoint;
+
     _setNewSource();
     _buildPositions();
   }
@@ -135,9 +167,13 @@ class PositionController extends GetxController {
   List<Position> get positions => _positions;
   List<Note> get notes => _notes;
   List<Widget> get children => _notes
-      .map<NoteWidget>((note) => NoteWidget(
-            note: note,
-            key: Key(note.title),
+      .map<Widget>((note) => Transform.scale(
+            alignment: Alignment.topLeft,
+            scale: _scale,
+            child: NoteWidget(
+              note: note,
+              key: Key(note.title),
+            ),
           ))
       .toList();
 
