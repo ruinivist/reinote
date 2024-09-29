@@ -135,7 +135,7 @@ class _CanvasRenderBox extends RenderBox
     RenderBox? child = firstChild;
     for (int idx = 0; child != null; idx++) {
       final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
-      context.paintChild(child, _offset + _positions[idx].toOffset());
+      context.paintChild(child, _offset + _positions[idx].toOffset() * _scale);
       child = childParentData.nextSibling;
     }
   }

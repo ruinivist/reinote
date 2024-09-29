@@ -7,9 +7,9 @@ class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
   ScrollController scrollController = ScrollController();
-  TextEditingController textEditingController = TextEditingController(text: _dummyMarkdown);
+  TextEditingController textEditingController = TextEditingController(text: dummyMarkdown);
 
-  final _text = _dummyMarkdown.obs;
+  final _text = dummyMarkdown.obs;
   String get text => _text.value;
 
   @override
@@ -21,7 +21,7 @@ class EditorController extends GetxController {
   }
 }
 
-String _dummyMarkdown = '''
+String dummyMarkdown = '''
 # Markdown Example
 
 ## Sample Markdown

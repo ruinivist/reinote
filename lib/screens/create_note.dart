@@ -38,12 +38,13 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            NoteController.to.debugInitWithOneNote(
-              Note(
-                title: "New Note",
-                content: EditorController.to.text,
-              ),
-            );
+            NoteController.to.debugInitWithSeedNote();
+            // NoteController.to.debugInitWithOneNote(
+            //   Note(
+            //     title: "New Note",
+            //     content: EditorController.to.text,
+            //   ),
+            // );
           },
           child: const Icon(Icons.add),
         ),

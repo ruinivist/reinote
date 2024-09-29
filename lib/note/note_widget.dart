@@ -16,15 +16,18 @@ class NoteWidget extends StatefulWidget {
 class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 300,
-      height: 200,
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: SizedBox(
-          width: 300,
-          height: 200,
-          child: EditorView(text: widget.note.content),
+    return GestureDetector(
+      onTap: () => lg.i("NoteWidget tapped"),
+      child: SizedBox(
+        width: 400,
+        height: 300,
+        child: Card(
+          margin: EdgeInsets.zero,
+          child: SizedBox(
+            width: 400,
+            height: 400,
+            child: EditorView(text: widget.note.content),
+          ),
         ),
       ),
     );
