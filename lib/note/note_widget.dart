@@ -25,7 +25,7 @@ class _NoteWidgetState extends State<NoteWidget> {
           margin: EdgeInsets.zero,
           child: SizedBox(
             width: 400,
-            height: 400,
+            height: 300,
             child: EditorView(text: widget.note.content),
           ),
         ),

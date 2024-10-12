@@ -6,11 +6,11 @@ import 'package:local_tl_app/markdown/editor_controller.dart';
 
 import 'note_model.dart';
 
-final note1 = Note(title: 'note1', content: dummyMarkdown);
-final note2 = Note(title: 'note2', content: dummyMarkdown);
-final note3 = Note(title: 'note3', content: dummyMarkdown);
-final note4 = Note(title: 'note4', content: dummyMarkdown);
-final note5 = Note(title: 'note5', content: dummyMarkdown);
+final note1 = Note(title: 'note1', content: 'description1');
+final note2 = Note(title: 'note2', content: 'description2');
+final note3 = Note(title: 'note3', content: 'description3');
+final note4 = Note(title: 'note4', content: 'description4');
+final note5 = Note(title: 'note5', content: 'description5');
 
 /*
 

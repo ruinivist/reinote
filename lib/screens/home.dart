@@ -22,11 +22,33 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.toNamed(CreateNote.routeName);
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'zoomIn',
+            onPressed: () {
+              PositionController.to.updateScaleCentered(2);
+            },
+            child: const Icon(Icons.zoom_in),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: 'zoomOut',
+            onPressed: () {
+              PositionController.to.updateScaleCentered(0.5);
+            },
+            child: const Icon(Icons.zoom_out),
+          ),
+          SizedBox(height: 10),
+          FloatingActionButton(
+            heroTag: 'addNote',
+            onPressed: () {
+              Get.toNamed(CreateNote.routeName);
+            },
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
       // TODO: there's a 2x render bug here, see similar comment in Canvas view
       // you need to make the offset state common

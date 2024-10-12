@@ -65,11 +65,10 @@ class PositionController extends GetxController {
   /// this is a superset of pan so handles both pan and scale
   void handleScaleUpdate(ScaleUpdateDetails details) {
     // dampended new scale
-    // double dampeningFactor = 0.1;
-    // double scaleDelta = (details.scale - 1) * dampeningFactor;
-    // double newScale = _scale * (1 + scaleDelta);
-    // newScale = newScale.clamp(0.1, 10.0);
-    final newScale = (_scale * details.scale).clamp(0.4, 4.0);
+    double dampeningFactor = 0.1;
+    double scaleDelta = (details.scale - 1) * dampeningFactor;
+    double newScale = _scale * (1 + scaleDelta);
+    newScale = newScale.clamp(0.4, 4.0);
 
     // focal point in the coordinate system of the grid
     Offset focalPoint = details.localFocalPoint;
@@ -86,6 +85,18 @@ class PositionController extends GetxController {
       _offset += details.localFocalPoint - _lastFocalPoint!;
     }
     _lastFocalPoint = details.focalPoint;
+
+    _setNewSource();
+    _buildPositions();
+  }
+
+  void updateScaleCentered(double newScale) {
+    final focalPoint = Offset(Get.width / 2, Get.height / 2); // ss center of screen
+    Offset gridFocalPoint = (focalPoint - _offset) / _scale;
+    _scale = newScale;
+    _offset = focalPoint - gridFocalPoint * _scale;
+
+    _lastFocalPoint = focalPoint;
 
     _setNewSource();
     _buildPositions();
@@ -123,6 +134,12 @@ class PositionController extends GetxController {
     List<(Note, Position)> stack = [(_sourceNote as Note, _gsSourcePosition)];
     Set<Note> visited = {};
 
+    final Size screenSize = MediaQuery.of(Get.context!).size;
+
+    final sourcePos = _gsSourcePosition.toOffset() * _scale + _offset;
+    lg.i('sourcePos: $sourcePos');
+    lg.i('screenSize: $screenSize');
+
     while (stack.isNotEmpty) {
       final current = stack.removeLast();
 
@@ -131,19 +148,18 @@ class PositionController extends GetxController {
 
       notes.add(curNote);
       positions.add(curPos);
+      // Convert grid space position to screen space
+      final ssNotePos = curPos.toOffset() * _scale + _offset;
+      final scaledNoteSize = Size(noteSize.width * _scale, noteSize.height * _scale);
 
-      // stop if note is out of bounds
-      const extra = Offset(400, 400);
-      final onScreen = curPos.toOffset();
-      Offset topLeft = -offset - extra; //(0,0) screenspace - offset = gridspace
-      Offset bottomRight = Offset(screen.width, screen.height) - offset + extra; // same here
-      //if this point in the rect
-      if (onScreen.dx < topLeft.dx ||
-          onScreen.dx > bottomRight.dx ||
-          onScreen.dy < topLeft.dy ||
-          onScreen.dy > bottomRight.dy) {
-        lg.i('out of bounds: ${curNote.title}');
-        lg.i('position: $onScreen');
+      // Create screen bounds rectangle with extra padding
+      Rect screenBounds =
+          Rect.fromLTWH(-screenSize.width, -screenSize.height, 2 * screenSize.width, 2 * screenSize.height);
+
+      // Check if the note is visible on screen
+      if (!screenBounds
+          .overlaps(Rect.fromLTWH(ssNotePos.dx, ssNotePos.dy, scaledNoteSize.width, scaledNoteSize.height))) {
+        lg.i('skipping ${curNote.content}');
         continue;
       }
 
@@ -195,11 +211,13 @@ class PositionController extends GetxController {
     assert(_positions.isNotEmpty);
 
     final mid = Position.fromOffset(gsCenterOfScreen);
+    lg.i('mid: $mid');
     double minDist = double.infinity;
     int minIndex = 0;
 
+    // note: taking distance from the center of the note, not the top left
     for (int i = 0; i < _positions.length; i++) {
-      final dist = mid.distanceSquared(_positions[i]);
+      final dist = mid.distanceSquared(_positions[i] + Position(noteSize.width / 2, noteSize.height / 2));
       if (dist < minDist) {
         minDist = dist;
         minIndex = i;
@@ -209,7 +227,7 @@ class PositionController extends GetxController {
     _sourceNote = _notes[minIndex];
     _gsSourcePosition = _positions[minIndex];
 
-    lg.i('new source: ${(_sourceNote as Note).title}');
+    lg.i('new source note: ${(_sourceNote as Note).content}');
     lg.i('new source position: $_gsSourcePosition');
   }
 
