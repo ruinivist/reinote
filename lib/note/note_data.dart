@@ -27,11 +27,11 @@ void connect() {
   note2.connectRight(note4);
   note4.connectRight(note5);
 
-  // var cur = note3;
-  // for (int i = 0; i < 1000; i++) {
-  //   cur.connectDown(Note(title: 'note${i + 6}', description: 'description${i + 6}'));
-  //   cur = cur.down as Note;
-  // }
+  var cur = note3;
+  for (int i = 0; i < 1000; i++) {
+    cur.connectDown(Note(title: 'note${i + 6}', content: 'description${i + 6}'));
+    cur = cur.down as Note;
+  }
 }
 
 final root = note1;

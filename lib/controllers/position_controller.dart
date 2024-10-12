@@ -5,6 +5,9 @@ import 'package:local_tl_app/note/note_widget.dart';
 
 import '../utils/log.dart';
 
+// ss -> screenspace
+// gs -> gridspace
+
 class Position {
   final double x;
   final double y;
@@ -89,14 +92,16 @@ class PositionController extends GetxController {
   }
 
   NoteBase _sourceNote;
-  Position _sourcePosition; // at (0,0) offset whats gonna be the source position
+  Position _gsSourcePosition; // at (0,0) offset whats gonna be the source position
 
   final noteSize = const Size(400, 300);
   final padding = 20.0;
   final Size screen;
 
-  PositionController({required NoteBase sourceNote, required Position sourcePosition, required this.screen})
-      : _sourcePosition = sourcePosition,
+  // sourcePosition in the gridspace
+  // lets say when it all inits, the screenspace (0,0) is grid space (0,0)
+  PositionController({required NoteBase sourceNote, required Position gsSourcePosition, required this.screen})
+      : _gsSourcePosition = gsSourcePosition,
         _sourceNote = sourceNote {
     _buildPositions();
   }
@@ -104,6 +109,7 @@ class PositionController extends GetxController {
   final _positions = <Position>[].obs;
   final _notes = <Note>[].obs;
 
+  /// build the positons of the notes in gridspace
   void _buildPositions() {
     if (_sourceNote is NoNote) {
       _positions.clear();
@@ -114,7 +120,7 @@ class PositionController extends GetxController {
     List<Position> positions = [];
     List<Note> notes = [];
 
-    List<(Note, Position)> stack = [(_sourceNote as Note, _sourcePosition)];
+    List<(Note, Position)> stack = [(_sourceNote as Note, _gsSourcePosition)];
     Set<Note> visited = {};
 
     while (stack.isNotEmpty) {
@@ -129,17 +135,18 @@ class PositionController extends GetxController {
       // stop if note is out of bounds
       const extra = Offset(400, 400);
       final onScreen = curPos.toOffset();
-      Offset topLeft = offset - extra;
-      Offset bottomRight = offset + Offset(screen.width, screen.height) + extra;
+      Offset topLeft = -offset - extra; //(0,0) screenspace - offset = gridspace
+      Offset bottomRight = Offset(screen.width, screen.height) - offset + extra; // same here
       //if this point in the rect
       if (onScreen.dx < topLeft.dx ||
           onScreen.dx > bottomRight.dx ||
           onScreen.dy < topLeft.dy ||
           onScreen.dy > bottomRight.dy) {
+        lg.i('out of bounds: ${curNote.title}');
+        lg.i('position: $onScreen');
         continue;
       }
 
-      // up
       if (curNote.hasUp && !visited.contains(curNote.up)) {
         stack.add((curNote.up as Note, curPos - Position(0, noteSize.height + padding)));
       }
@@ -177,7 +184,7 @@ class PositionController extends GetxController {
           ))
       .toList();
 
-  Offset get center => offset + Offset(Get.width / 2, Get.height / 2);
+  Offset get gsCenterOfScreen => (Offset(Get.width / 2, Get.height / 2) - _offset) / scale;
 
   void _setNewSource() {
     if (_sourceNote is NoNote) return;
@@ -187,7 +194,7 @@ class PositionController extends GetxController {
     // find the index of the note which is closest to the center (euclidean distance)
     assert(_positions.isNotEmpty);
 
-    final mid = Position.fromOffset(center);
+    final mid = Position.fromOffset(gsCenterOfScreen);
     double minDist = double.infinity;
     int minIndex = 0;
 
@@ -200,13 +207,16 @@ class PositionController extends GetxController {
     }
 
     _sourceNote = _notes[minIndex];
-    _sourcePosition = _positions[minIndex];
+    _gsSourcePosition = _positions[minIndex];
+
+    lg.i('new source: ${(_sourceNote as Note).title}');
+    lg.i('new source position: $_gsSourcePosition');
   }
 
   /// restart afresh with new source
   void resetSource(Note sourceNote, Position sourcePosition, {Offset? offset}) {
     _sourceNote = sourceNote;
-    _sourcePosition = sourcePosition;
+    _gsSourcePosition = sourcePosition;
     if (offset != null) {
       _offset = offset;
     }

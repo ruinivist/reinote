@@ -38,14 +38,17 @@ class _AppState extends State<App> {
     Get.put(
       PositionController(
         sourceNote: const NoNote(),
-        sourcePosition: Position.zero,
+        gsSourcePosition: Position(
+          MediaQuery.of(context).size.width / 2,
+          MediaQuery.of(context).size.height,
+        ),
         screen: MediaQuery.of(context).size,
       ),
     );
     Get.put(NoteController());
     return Obx(
       () => GetMaterialApp(
-        showPerformanceOverlay: true,
+        // showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(
