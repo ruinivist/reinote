@@ -17,7 +17,7 @@ class _NoteWidgetState extends State<NoteWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => lg.i("NoteWidget tapped"),
+      onTap: () => lg.i("tapped"),
       child: SizedBox(
         width: 400,
         height: 300,

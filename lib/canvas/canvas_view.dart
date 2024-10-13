@@ -3,6 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 
+import '../utils/log.dart';
+
 /// no magic deps except what you pass
 class CanvasView extends StatelessWidget {
   final Offset offset;
@@ -148,11 +150,13 @@ class _CanvasRenderBox extends RenderBox
     for (int i = childCount - 1; i >= 0; i--) {
       if (child != null) {
         final _CanvasParentData childParentData = child.parentData! as _CanvasParentData;
-        final childPosition = position - _offset - _positions[i].toOffset();
-        if (child.size.contains(childPosition)) {
+        // child is at _positions[i] in grid space
+        final ssChildPosition = _offset + _positions[i].toOffset() * _scale; // child position in screen space
+        final positionInChildSpace = position - ssChildPosition; // position in child space
+        if ((child.size * _scale).contains(positionInChildSpace)) {
           final isHit = result.addWithPaintOffset(
-            offset: _offset + _positions[i].toOffset(),
-            position: position,
+            offset: null, // i convert it directly to child space
+            position: positionInChildSpace,
             hitTest: (BoxHitTestResult result, Offset transformed) {
               return child!.hitTest(result, position: transformed);
             },

@@ -50,8 +50,6 @@ class _HomeState extends State<Home> {
           ),
         ],
       ),
-      // TODO: there's a 2x render bug here, see similar comment in Canvas view
-      // you need to make the offset state common
       body: Obx(
         () => CanvasView(
           positions: posCont.positions,

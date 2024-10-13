@@ -16,7 +16,7 @@ class EditorView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Markdown(
       physics: const NeverScrollableScrollPhysics(),
-      selectable: true,
+      selectable: false, // TODO if clickign on words the selectable listener picsk the event intead of scroll or drag
       data: text,
       extensionSet: md.ExtensionSet(
         md.ExtensionSet.gitHubFlavored.blockSyntaxes,

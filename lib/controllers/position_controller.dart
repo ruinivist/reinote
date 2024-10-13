@@ -137,8 +137,6 @@ class PositionController extends GetxController {
     final Size screenSize = MediaQuery.of(Get.context!).size;
 
     final sourcePos = _gsSourcePosition.toOffset() * _scale + _offset;
-    lg.i('sourcePos: $sourcePos');
-    lg.i('screenSize: $screenSize');
 
     while (stack.isNotEmpty) {
       final current = stack.removeLast();
@@ -159,7 +157,6 @@ class PositionController extends GetxController {
       // Check if the note is visible on screen
       if (!screenBounds
           .overlaps(Rect.fromLTWH(ssNotePos.dx, ssNotePos.dy, scaledNoteSize.width, scaledNoteSize.height))) {
-        lg.i('skipping ${curNote.content}');
         continue;
       }
 
@@ -211,7 +208,6 @@ class PositionController extends GetxController {
     assert(_positions.isNotEmpty);
 
     final mid = Position.fromOffset(gsCenterOfScreen);
-    lg.i('mid: $mid');
     double minDist = double.infinity;
     int minIndex = 0;
 
@@ -226,9 +222,6 @@ class PositionController extends GetxController {
 
     _sourceNote = _notes[minIndex];
     _gsSourcePosition = _positions[minIndex];
-
-    lg.i('new source note: ${(_sourceNote as Note).content}');
-    lg.i('new source position: $_gsSourcePosition');
   }
 
   /// restart afresh with new source
