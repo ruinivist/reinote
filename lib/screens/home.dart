@@ -25,12 +25,20 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        NoteController.to.selectedNoteId.value = -1;
+        PositionController.to.selectedNoteId.value = -1;
       },
       child: Scaffold(
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            FloatingActionButton(
+              heroTag: 'focus',
+              onPressed: () {
+                PositionController.to.focusActiveNote();
+              },
+              child: const Icon(Icons.circle_outlined),
+            ),
+            SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'zoomIn',
               onPressed: () {

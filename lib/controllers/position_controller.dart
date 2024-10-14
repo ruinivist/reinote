@@ -50,12 +50,34 @@ class Position {
 class PositionController extends GetxController {
   static PositionController get to => Get.find();
 
+  final selectedNoteId = (-1).obs;
+
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
   double _scale = 1.0;
   double get scale => _scale;
 
   Offset? _lastFocalPoint;
+
+  /// centers the active note & resets scale
+  void focusActiveNote() {
+    // active note must be in positions
+    if (selectedNoteId.value == -1) return;
+    final activeNoteIndex = notes.indexWhere((note) => note.id == selectedNoteId.value);
+    if (activeNoteIndex == -1) return;
+
+    final activeNotePos = positions[activeNoteIndex];
+
+    _scale = 1;
+    // 2c + 300 = h where c is the distance from screen space origin vertically
+    // 2e + 400 = w same but horizontally
+    Offset ssActiveNote = Offset((Get.width - 400) / 2, (Get.height - 300) / 2);
+    _offset = ssActiveNote - activeNotePos.toOffset() * _scale;
+
+    _lastFocalPoint = Offset(Get.width / 2, Get.height / 2);
+    _setNewSource();
+    _buildPositions();
+  }
 
   void handleScaleStart(ScaleStartDetails details) {
     _lastFocalPoint = details.localFocalPoint;

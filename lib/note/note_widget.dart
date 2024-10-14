@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:local_tl_app/controllers/note_controller.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 
@@ -20,10 +19,15 @@ class _NoteWidgetState extends State<NoteWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        NoteController.to.selectedNoteId.value = widget.note.id;
+        PositionController.to.selectedNoteId.value = widget.note.id;
+      },
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! < 0) {
+          // open the new note tab attaching to the right of current note
+        }
       },
       child: Obx(() {
-        bool active = NoteController.to.selectedNoteId.value == widget.note.id;
+        bool active = PositionController.to.selectedNoteId.value == widget.note.id;
         return Container(
           width: 400,
           height: 300,
