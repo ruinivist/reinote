@@ -10,12 +10,13 @@ class EditorView extends StatelessWidget {
   // passing it directly because magic where the widget picks up automatically from god knows where ( as in Get.find )
   // would make thins harder to understand
   final String text;
-  const EditorView({super.key, required this.text});
+  final bool isScrollable;
+  const EditorView({super.key, required this.text, this.isScrollable = false});
 
   @override
   Widget build(BuildContext context) {
     return Markdown(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: isScrollable ? const BouncingScrollPhysics() : const NeverScrollableScrollPhysics(),
       selectable: false, // TODO if clickign on words the selectable listener picsk the event intead of scroll or drag
       data: text,
       extensionSet: md.ExtensionSet(

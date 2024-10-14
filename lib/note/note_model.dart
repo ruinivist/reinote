@@ -14,8 +14,12 @@ class NoNote extends NoteBase {
 }
 
 class Note extends NoteBase {
+  static int _nextValidId = 0;
+  static int get nextValidId => _nextValidId++;
+
   final String title;
   final String content;
+  final int id;
 
   bool get hasRight => right is! NoNote;
   bool get hasLeft => left is! NoNote;
@@ -30,7 +34,7 @@ class Note extends NoteBase {
   Note({
     required this.title,
     required this.content,
-  });
+  }) : id = nextValidId;
   // todo: add check so as this doesn't overwrite existing connections
   void connectRight(Note note) {
     note.left = this;

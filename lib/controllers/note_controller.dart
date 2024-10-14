@@ -9,6 +9,8 @@ import '../note/note_model.dart';
 class NoteController extends GetxController {
   static NoteController get to => Get.find();
 
+  final selectedNoteId = (-1).obs;
+
   Note? _root;
   bool get hasNotes => _root != null;
 

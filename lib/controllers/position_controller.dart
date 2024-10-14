@@ -102,6 +102,10 @@ class PositionController extends GetxController {
     _buildPositions();
   }
 
+  void deltaUpdateScaleCentered(double delta) {
+    updateScaleCentered((_scale + delta).clamp(0.4, 2.0));
+  }
+
   NoteBase _sourceNote;
   Position _gsSourcePosition; // at (0,0) offset whats gonna be the source position
 
