@@ -251,12 +251,15 @@ class PositionController extends GetxController {
   }
 
   /// restart afresh with new source
-  void resetSource(Note sourceNote, Position sourcePosition, {Offset? offset}) {
+  /// the new source is the origin of the grid space now
+  void resetSource(Note sourceNote) {
     _sourceNote = sourceNote;
-    _gsSourcePosition = sourcePosition;
-    if (offset != null) {
-      _offset = offset;
-    }
+    _gsSourcePosition = Position.zero;
+
+    Offset newSourceOffset = Offset((Get.width - 400 * _scale) / 2, (Get.height - 300 * _scale) / 2);
+    _offset = newSourceOffset;
+
+    _lastFocalPoint = Offset(Get.width / 2, Get.height / 2);
     _buildPositions();
   }
 }

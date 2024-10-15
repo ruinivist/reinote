@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:local_tl_app/controllers/note_controller.dart';
+import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/note/note_utils.dart';
 import 'package:local_tl_app/widgets/editor/inline_preview_editor/inline_preview_editor.dart';
@@ -15,7 +16,9 @@ import '../utils/log.dart';
 
 class CreateNote extends StatefulWidget {
   static const routeName = '/create_note';
-  const CreateNote({super.key});
+  final Note? note;
+  final Direction? direction;
+  const CreateNote({this.note, this.direction, super.key});
 
   @override
   State<CreateNote> createState() => _CreateNoteState();
@@ -38,13 +41,21 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // NoteController.to.debugInitWithSeedNote();
-            NoteController.to.debugInitWithOneNote(
-              Note(
-                title: "New Note",
-                content: EditorController.to.text,
-              ),
+            final newNote = Note(
+              title: "New Note",
+              content: EditorController.to.text,
             );
+
+            // todo: write this better
+            if (widget.note != null) {
+              NoteController.to.addNote(newNote, widget.direction!, addTo: widget.note);
+            } else {
+              NoteController.to.addNote(newNote, Direction.up);
+            }
+
+            PositionController.to.resetSource(newNote);
+            PositionController.to.selectedNoteId.value = newNote.id;
+            Get.back();
           },
           child: const Icon(Icons.add),
         ),
