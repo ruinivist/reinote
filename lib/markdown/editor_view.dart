@@ -13,6 +13,8 @@ class EditorView extends StatelessWidget {
   final bool isScrollable;
   const EditorView({super.key, required this.text, this.isScrollable = false});
 
+  // TODO: the scroll offsets are not retained
+
   @override
   Widget build(BuildContext context) {
     return Markdown(

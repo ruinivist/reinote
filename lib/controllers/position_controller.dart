@@ -218,7 +218,7 @@ class PositionController extends GetxController {
             scale: _scale,
             child: NoteWidget(
               note: note,
-              key: Key(note.title),
+              key: ValueKey<int>(note.id),
             ),
           ))
       .toList();
@@ -226,6 +226,7 @@ class PositionController extends GetxController {
   Offset get gsCenterOfScreen => (Offset(Get.width / 2, Get.height / 2) - _offset) / scale;
 
   void _setNewSource() {
+    // return;
     if (_sourceNote is NoNote) return;
     // even when the offset changes the positions which are in ref to the (0,0)
     // will remain the same
