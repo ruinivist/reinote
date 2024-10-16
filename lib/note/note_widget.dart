@@ -29,6 +29,31 @@ class NoteWidget extends StatelessWidget {
                     direction: Direction.right,
                   ));
                 }
+                if (details.primaryVelocity! > 0) {
+                  // swipe right, add to left
+                  Get.to(CreateNote(
+                    note: note,
+                    direction: Direction.left,
+                  ));
+                }
+              }
+            : null,
+        onVerticalDragEnd: active
+            ? (details) {
+                if (details.primaryVelocity! > 0) {
+                  // swipe down, add to top
+                  Get.to(CreateNote(
+                    note: note,
+                    direction: Direction.up,
+                  ));
+                }
+                if (details.primaryVelocity! < 0) {
+                  // swipe up, add to bottom
+                  Get.to(CreateNote(
+                    note: note,
+                    direction: Direction.down,
+                  ));
+                }
               }
             : null,
         child: Container(
