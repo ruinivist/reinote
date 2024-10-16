@@ -20,6 +20,7 @@ import 'package:local_tl_app/screens/ui_test.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
 import 'package:local_tl_app/widgets/transitions/sharex_axis_page_transition.dart';
 
+import 'controllers/height_estimator.dart';
 import 'utils/log.dart';
 
 class App extends StatefulWidget {
@@ -45,6 +46,7 @@ class _AppState extends State<App> {
         screen: MediaQuery.of(context).size,
       ),
     );
+    Get.put(MarkdownHeightEstimatorController());
     Get.put(NoteController());
     return Obx(
       () => GetMaterialApp(

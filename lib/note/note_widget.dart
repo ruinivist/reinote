@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_tl_app/controllers/height_estimator.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/screens/create_note.dart';
@@ -58,7 +59,7 @@ class NoteWidget extends StatelessWidget {
             : null,
         child: Container(
           width: 400,
-          height: 300,
+          height: MarkdownHeightEstimatorController.to.estimateMarkdownHeight(note.content),
           decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:local_tl_app/controllers/height_estimator.dart';
+import 'package:local_tl_app/controllers/note_controller.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/note/note_widget.dart';
 
@@ -71,7 +73,9 @@ class PositionController extends GetxController {
     _scale = 1;
     // 2c + 300 = h where c is the distance from screen space origin vertically
     // 2e + 400 = w same but horizontally
-    Offset ssActiveNote = Offset((Get.width - 400) / 2, (Get.height - 300) / 2);
+    final noteSize =
+        Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(notes[activeNoteIndex].content));
+    Offset ssActiveNote = Offset((Get.width - noteSize.width) / 2, (Get.height - noteSize.height) / 2);
     _offset = ssActiveNote - activeNotePos.toOffset() * _scale;
 
     _lastFocalPoint = Offset(Get.width / 2, Get.height / 2);
@@ -130,8 +134,6 @@ class PositionController extends GetxController {
 
   NoteBase _sourceNote;
   Position _gsSourcePosition; // at (0,0) offset whats gonna be the source position
-
-  final noteSize = const Size(400, 300);
   final padding = 20.0;
   final Size screen;
 
@@ -157,22 +159,41 @@ class PositionController extends GetxController {
     List<Position> positions = [];
     List<Note> notes = [];
 
-    List<(Note, Position)> stack = [(_sourceNote as Note, _gsSourcePosition)];
+    lg.i('source note: ${(_sourceNote as Note).id} source position: $_gsSourcePosition');
+
+    List<(Note, Note, Position, Direction)> stack = [
+      (_sourceNote as Note, _sourceNote as Note, _gsSourcePosition, Direction.none)
+    ];
     Set<Note> visited = {};
 
     final Size screenSize = MediaQuery.of(Get.context!).size;
 
-    final sourcePos = _gsSourcePosition.toOffset() * _scale + _offset;
-
     while (stack.isNotEmpty) {
       final current = stack.removeLast();
 
-      final (curNote, curPos) = current;
+      final (curNote, oldNote, curPos, dir) = current;
       visited.add(curNote);
 
       notes.add(curNote);
-      positions.add(curPos);
+      final noteSize = Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(curNote.content));
+      final oldNoteSize = Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(oldNote.content));
+
+      if (dir == Direction.none) {
+        positions.add(curPos);
+      } else if (dir == Direction.up) {
+        positions.add(curPos - Position(0, noteSize.height + padding));
+      } else if (dir == Direction.down) {
+        positions.add(curPos + Position(0, oldNoteSize.height + padding));
+      } else if (dir == Direction.left) {
+        positions.add(curPos - Position(noteSize.width + padding, 0));
+      } else if (dir == Direction.right) {
+        positions.add(curPos + Position(oldNoteSize.width + padding, 0));
+      }
+
+      final newCurPos = positions.last;
+
       // Convert grid space position to screen space
+      lg.i('size ofr note ${curNote.id}: $noteSize');
       final ssNotePos = curPos.toOffset() * _scale + _offset;
       final scaledNoteSize = Size(noteSize.width * _scale, noteSize.height * _scale);
 
@@ -187,27 +208,30 @@ class PositionController extends GetxController {
       }
 
       if (curNote.hasUp && !visited.contains(curNote.up)) {
-        stack.add((curNote.up as Note, curPos - Position(0, noteSize.height + padding)));
+        stack.add((curNote.up as Note, curNote, newCurPos, Direction.up));
       }
 
       // down
       if (curNote.hasDown && !visited.contains(curNote.down)) {
-        stack.add((curNote.down as Note, curPos + Position(0, noteSize.height + padding)));
+        stack.add((curNote.down as Note, curNote, newCurPos, Direction.down));
       }
 
       // left
       if (curNote.hasLeft && !visited.contains(curNote.left)) {
-        stack.add((curNote.left as Note, curPos - Position(noteSize.width + padding, 0)));
+        stack.add((curNote.left as Note, curNote, newCurPos, Direction.left));
       }
 
       // right
       if (curNote.hasRight && !visited.contains(curNote.right)) {
-        stack.add((curNote.right as Note, curPos + Position(noteSize.width + padding, 0)));
+        stack.add((curNote.right as Note, curNote, newCurPos, Direction.right));
       }
     }
 
     _positions.value = positions;
     _notes.value = notes;
+
+    lg.i('Positions: $_positions');
+    lg.i('Notes: $_notes');
   }
 
   List<Position> get positions => _positions;
@@ -240,7 +264,9 @@ class PositionController extends GetxController {
 
     // note: taking distance from the center of the note, not the top left
     for (int i = 0; i < _positions.length; i++) {
-      final dist = mid.distanceSquared(_positions[i] + Position(noteSize.width / 2, noteSize.height / 2));
+      //positions i is not the same as notes i
+      final noteSize = Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(_notes[i].content));
+      final dist = mid.distanceSquared(_positions[i]);
       if (dist < minDist) {
         minDist = dist;
         minIndex = i;
@@ -249,6 +275,9 @@ class PositionController extends GetxController {
 
     _sourceNote = _notes[minIndex];
     _gsSourcePosition = _positions[minIndex];
+
+    lg.i('New source: ${(_sourceNote as Note).id}');
+    lg.i('New source position: $_gsSourcePosition');
   }
 
   /// restart afresh with new source
@@ -257,7 +286,9 @@ class PositionController extends GetxController {
     _sourceNote = sourceNote;
     _gsSourcePosition = Position.zero;
 
-    Offset newSourceOffset = Offset((Get.width - 400 * _scale) / 2, (Get.height - 300 * _scale) / 2);
+    final noteSize = Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(sourceNote.content));
+    Offset newSourceOffset =
+        Offset((Get.width - noteSize.width * _scale) / 2, (Get.height - noteSize.height * _scale) / 2);
     _offset = newSourceOffset;
 
     _lastFocalPoint = Offset(Get.width / 2, Get.height / 2);

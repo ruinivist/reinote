@@ -6,7 +6,7 @@ import 'package:local_tl_app/note/note_properties.dart';
 import '../note/note_model.dart';
 import '../utils/log.dart';
 
-enum Direction { up, down, left, right }
+enum Direction { up, down, left, right, none }
 
 class NoteController extends GetxController {
   static NoteController get to => Get.find();

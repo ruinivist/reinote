@@ -58,4 +58,9 @@ class Note extends NoteBase {
 
   List<NoteBase> get neighbors => [up, down, left, right];
   List<Note> get validNeighbors => neighbors.whereType<Note>().toList();
+
+  @override
+  String toString() {
+    return "$id";
+  }
 }
