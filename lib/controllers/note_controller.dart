@@ -34,6 +34,7 @@ class NoteController extends GetxController {
       return;
     }
 
+    bool baseChain = addTo == null;
     assert(_end != null, "_end cannot be null if root is not null");
     addTo ??= _end;
 
@@ -53,6 +54,6 @@ class NoteController extends GetxController {
       note.connectLeft(end);
     }
 
-    _end = note;
+    if (baseChain) _end = note;
   }
 }
