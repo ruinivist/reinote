@@ -8,29 +8,24 @@ import '../controllers/note_controller.dart';
 import '../utils/log.dart';
 import 'note_model.dart';
 
-class NoteWidget extends StatefulWidget {
+class NoteWidget extends StatelessWidget {
   final Note note;
   const NoteWidget({required this.note, super.key});
 
   @override
-  State<NoteWidget> createState() => _NoteWidgetState();
-}
-
-class _NoteWidgetState extends State<NoteWidget> {
-  @override
   Widget build(BuildContext context) {
     return Obx(() {
-      bool active = PositionController.to.selectedNoteId.value == widget.note.id;
+      bool active = PositionController.to.selectedNoteId.value == note.id;
       return GestureDetector(
         onTap: () {
-          PositionController.to.selectedNoteId.value = active ? -1 : widget.note.id;
+          PositionController.to.selectedNoteId.value = active ? -1 : note.id;
         },
         onHorizontalDragEnd: active
             ? (details) {
                 if (details.primaryVelocity! < 0) {
                   // swipe left, add to right
                   Get.to(CreateNote(
-                    note: widget.note,
+                    note: note,
                     direction: Direction.right,
                   ));
                 }
@@ -47,7 +42,7 @@ class _NoteWidgetState extends State<NoteWidget> {
             borderRadius: BorderRadius.circular(10),
           ),
           margin: EdgeInsets.zero,
-          child: EditorView(text: widget.note.content, isScrollable: active),
+          child: EditorView(text: note.content, isScrollable: active),
         ),
       );
     });
