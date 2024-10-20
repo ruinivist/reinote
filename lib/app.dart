@@ -16,7 +16,6 @@ import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
 import 'package:local_tl_app/screens/home.dart';
 import 'package:local_tl_app/screens/select_vault.dart';
-import 'package:local_tl_app/screens/ui_test.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
 import 'package:local_tl_app/widgets/transitions/sharex_axis_page_transition.dart';
 

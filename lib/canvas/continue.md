@@ -1,1 +1,0 @@
-- figure out how all the calcs actually work, claude cant help, I have to make the scale thing work on my end

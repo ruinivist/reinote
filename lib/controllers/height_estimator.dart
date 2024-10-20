@@ -14,7 +14,6 @@ class MarkdownHeightEstimatorController extends GetxController {
   MarkdownHeightEstimatorController();
 
   double estimateMarkdownHeight(String markdown) {
-    return 100.0 + 10 * markdown.length;
     if (width.value <= 0) {
       throw Exception('Width must be set before estimating height');
     }
