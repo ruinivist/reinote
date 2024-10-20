@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:local_tl_app/controllers/filesystem.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 
 import '../note/note_model.dart';
@@ -14,6 +15,7 @@ class NoteController extends GetxController {
 
   void debugInitWithOneNote(Note note) {
     _root = note;
+    _end = note;
     PositionController.to.resetSource(note);
   }
 
@@ -22,10 +24,14 @@ class NoteController extends GetxController {
   //   PositionController.to.resetSource(_root!, Position.zero);
   // }
 
-  void addNote(Note note, {Direction? dir, Note? addTo}) {
+  Future<void> addNote(Note note, {Direction? dir, Note? addTo, devAddAsRoot = false}) async {
     assert(dir != null && addTo != null || dir == null && addTo == null, "If dir is null, addTo must be null");
 
-    if (_root == null) {
+    if (devAddAsRoot || _root == null) {
+      //delete all
+      await FileSystemController.to.deleteAllFiles();
+      await FileSystemController.to.createNewFile(note.title, note.storedData());
+
       _root = note;
       _end = _root;
 

@@ -1,3 +1,5 @@
+import 'package:local_tl_app/note/note_utils.dart';
+
 class Point {
   final double x;
   final double y;
@@ -17,8 +19,8 @@ class Note extends NoteBase {
   static int _nextValidId = 0;
   static int get nextValidId => _nextValidId++;
 
-  final String title;
-  final String content;
+  late final String title;
+  late final String content;
   final int id;
 
   bool get hasRight => right is! NoNote;
@@ -39,6 +41,14 @@ class Note extends NoteBase {
   void connectRight(Note note) {
     note.left = this;
     right = note;
+  }
+
+  Note.fromStoredString(String storedData) : id = nextValidId {
+    final (yaml, content) = NoteUtils.splitYamlAndContent(storedData);
+    final properties = NoteUtils.parseYaml(yaml);
+
+    title = properties['title'] ?? '';
+    this.content = content;
   }
 
   void connectLeft(Note note) {
@@ -62,5 +72,14 @@ class Note extends NoteBase {
   @override
   String toString() {
     return "$id";
+  }
+
+  String storedData() {
+    final properties = NoteUtils.mapToYAML({
+      'title': title,
+      'date': DateTime.now().toIso8601String(),
+    });
+    final propertiesStr = "---\n$properties---\n\n";
+    return propertiesStr + content;
   }
 }

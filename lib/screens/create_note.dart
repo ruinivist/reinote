@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_tl_app/controllers/note_controller.dart';
-import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/widgets/editor/inline_preview_editor/inline_preview_editor.dart';
 
@@ -35,16 +34,18 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () {
+          onPressed: () async {
             final newNote = Note(
               title: "New Note",
               content: EditorController.to.text,
             );
 
-            NoteController.to.addNote(newNote, dir: widget.direction, addTo: widget.note);
-
-            PositionController.to.resetSource(newNote);
-            PositionController.to.selectedNoteId.value = newNote.id;
+            await NoteController.to.addNote(
+              newNote,
+              dir: widget.direction,
+              addTo: widget.note,
+              devAddAsRoot: true,
+            );
             Get.back();
           },
           child: const Icon(Icons.add),
@@ -126,34 +127,3 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
     );
   }
 }
-
-// class LiveMdView extends StatefulWidget {
-//   const LiveMdView({super.key});
-
-//   @override
-//   State<LiveMdView> createState() => _LiveMdViewState();
-// }
-
-// class _LiveMdViewState extends State<LiveMdView> {
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     Get.put(EditorController());
-//     return Column(
-//       children: [
-//         Expanded(child: ()),
-//         TextButton(
-//           onPressed: () {
-//             final x = NoteUtils.parseNoteProperties(EditorController.to.textEditingController.text);
-//             lg.d(x);
-//           },
-//           child: Text("f1"),
-//         ),
-//       ],
-//     );
-//   }
-// }

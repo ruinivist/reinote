@@ -14,7 +14,6 @@ import 'package:local_tl_app/widgets/editor/md_config.dart';
 import 'package:local_tl_app/widgets/transitions/sharex_axis_page_transition.dart';
 
 import 'controllers/height_estimator.dart';
-import 'utils/log.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -75,61 +74,6 @@ class _AppState extends State<App> {
             customTransition: SharedAxisPageTransition(),
             transitionDuration: const Duration(milliseconds: 300),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class SampleScaffold extends StatelessWidget {
-  const SampleScaffold({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sample Scaffold'),
-        actions: [
-          // settings
-          // IconButton(
-          //   icon: const Icon(Icons.settings),
-          //   onPressed: () {
-          //     Get.to(() => Settings());
-          //   },
-          // ),
-        ],
-      ),
-      body: Container(),
-    );
-  }
-}
-
-class MyruiadOfButtojns extends StatelessWidget {
-  const MyruiadOfButtojns({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final fs = Get.put(FileSystemController());
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('buttons'),
-      ),
-      body: Column(
-        children: [
-          TextButton(
-            onPressed: () async {
-              final x = await fs.listFilesRecursively();
-              lg.i(x);
-            },
-            child: Text("show path"),
-          ),
-          TextButton(
-            onPressed: () async {
-              final x = await fs.createFile("test.md", "content");
-              lg.i(x);
-            },
-            child: Text("sd"),
-          )
         ],
       ),
     );

@@ -3,37 +3,43 @@ import 'package:yaml/yaml.dart';
 import '../../utils/log.dart';
 
 class NoteUtils {
-  static Map<String, dynamic> parseNoteProperties(String markdownContent) {
+  static (String, String) splitYamlAndContent(String markdownContent) {
     // Regular expression to match the YAML frontmatter
-    final regex = RegExp(r'^---\s*\n(.*?)\n---\s*\n', dotAll: true);
+    final yamlPattern = RegExp(
+      r'^---\s*\n([\s\S]+?)\n---\s*\n([\s\S]*)',
+      multiLine: true,
+    );
 
-    // Try to find a match in the markdown content
-    final match = regex.firstMatch(markdownContent);
+    // Use the regex to extract the YAML part and the content
+    final match = yamlPattern.firstMatch(markdownContent);
 
-    // If no match is found, return an empty map
-    if (match == null) {
-      return {};
+    // If there's a match, extract YAML and content
+    if (match != null) {
+      String yaml = match.group(1)?.trim() ?? '';
+      String content = match.group(2)?.trim() ?? '';
+      return (yaml, content);
     }
 
-    // Extract the YAML content
-    final yamlContent = match.group(1);
-
-    if (yamlContent == null) {
-      return {};
-    }
-
-    try {
-      final yamlMap = loadYaml(yamlContent);
-      return Map<String, dynamic>.from(yamlMap);
-    } catch (e) {
-      lg.e('Error parsing YAML: $e');
-      return {};
-    }
+    // If there's no match, return empty YAML and the whole content
+    return ('', markdownContent);
   }
 
-  static String mapToYAML(Map<String, dynamic> map) {
+  static Map<String, dynamic> parseYaml(String yamlString) {
+    if (yamlString.isEmpty) {
+      return {};
+    }
+
+    final yamlMap = loadYaml(yamlString);
+    return Map<String, dynamic>.from(yamlMap);
+  }
+
+  static String mapToYAML(Map<String, String> map) {
     final yamlMap = YamlMap.wrap(map);
-    return yamlMap.toString();
+    String yamlString = '';
+    for (final key in yamlMap.keys) {
+      yamlString += '$key: ${yamlMap[key]}\n';
+    }
+    return yamlString;
   }
 }
 
