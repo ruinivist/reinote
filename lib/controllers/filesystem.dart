@@ -76,6 +76,11 @@ class FileSystemController extends GetxController {
     await _vaultDirectory.create();
   }
 
+  Future<void> deleteFile(String fileName) async {
+    final file = File(path.join(_vaultDirectory.path, fileName));
+    await file.delete();
+  }
+
   // Future<void> _initializeDirectory() async {
   //   final appDocDir = await getApplicationDocumentsDirectory();
   //   _localTlDirectory = Directory(path.join(appDocDir!.path, 'local_tl'));

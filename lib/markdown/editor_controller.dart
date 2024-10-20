@@ -4,8 +4,12 @@ import 'package:get/get.dart';
 class EditorController extends GetxController {
   static EditorController get to => Get.find();
 
+  late TextEditingController textEditingController;
+  EditorController({String? initialText}) {
+    textEditingController = TextEditingController(text: initialText);
+  }
+
   ScrollController scrollController = ScrollController();
-  TextEditingController textEditingController = TextEditingController(text: "");
 
   final _text = "".obs;
   String get text => _text.value;

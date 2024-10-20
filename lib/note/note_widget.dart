@@ -20,6 +20,12 @@ class NoteWidget extends StatelessWidget {
         onTap: () {
           PositionController.to.selectedNoteId.value = active ? -1 : note.id;
         },
+        onDoubleTap: () {
+          // edit mode
+          Get.to(CreateNote(
+            note: note,
+          ));
+        },
         onHorizontalDragEnd: active
             ? (details) {
                 if (details.primaryVelocity! < 0) {

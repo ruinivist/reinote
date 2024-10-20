@@ -8,6 +8,9 @@ import '../controllers/theme_controller.dart';
 import '../markdown/editor_controller.dart';
 import '../note/note_model.dart';
 
+/// just note => edit mode.
+/// note + direction => add note in that direction to the note.
+/// no note => append to global "end" of notes.
 class CreateNote extends StatefulWidget {
   static const routeName = '/create_note';
   final Note? note;
@@ -20,6 +23,7 @@ class CreateNote extends StatefulWidget {
 
 class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateMixin {
   late final _tabController = TabController(length: 2, vsync: this);
+  bool get editing => widget.note != null && widget.direction == null;
 
   @override
   void dispose() {
@@ -29,26 +33,13 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    Get.put(EditorController());
+    Get.put(EditorController(initialText: widget.note?.content ?? ""));
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            final newNote = Note(
-              title: "New Note",
-              content: EditorController.to.text,
-            );
-
-            await NoteController.to.addNote(
-              newNote,
-              dir: widget.direction,
-              addTo: widget.note,
-              devAddAsRoot: true,
-            );
-            Get.back();
-          },
-          child: const Icon(Icons.add),
+          onPressed: editing ? editNote : newNote,
+          child: editing ? const Icon(Icons.edit) : const Icon(Icons.add),
         ),
         body: CustomScrollView(
           hitTestBehavior: HitTestBehavior.deferToChild,
@@ -125,5 +116,33 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
         ),
       ),
     );
+  }
+
+  void newNote() async {
+    final newNote = Note(
+      title: "New Note",
+      content: EditorController.to.text,
+    );
+
+    await NoteController.to.addNote(
+      newNote,
+      dir: widget.direction,
+      addTo: widget.note,
+      devAddAsRoot: true,
+    );
+    Get.back();
+  }
+
+  void editNote() async {
+    final newNote = Note(
+      title: "New Note",
+      content: EditorController.to.text,
+    );
+
+    await NoteController.to.editNote(
+      widget.note!,
+      newNote,
+    );
+    Get.back();
   }
 }

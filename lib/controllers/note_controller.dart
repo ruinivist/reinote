@@ -63,4 +63,22 @@ class NoteController extends GetxController {
 
     PositionController.to.resetAndMarkSelected(note);
   }
+
+  Future<void> editNote(Note oldNote, Note newNote) async {
+    await FileSystemController.to.deleteFile(oldNote.title);
+    await FileSystemController.to.createNewFile(newNote.title, newNote.storedData());
+
+    // TODO: same connections
+    // oldNote.disconnect();
+    // newNote.connect(oldNote);
+
+    if (oldNote == _root) {
+      _root = newNote;
+    }
+    if (oldNote == _end) {
+      _end = newNote;
+    }
+
+    PositionController.to.resetAndMarkSelected(newNote);
+  }
 }
