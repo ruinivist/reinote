@@ -294,4 +294,9 @@ class PositionController extends GetxController {
     _lastFocalPoint = Offset(Get.width / 2, Get.height / 2);
     _buildPositions();
   }
+
+  void resetAndMarkSelected(Note note) {
+    resetSource(note);
+    selectedNoteId.value = note.id;
+  }
 }

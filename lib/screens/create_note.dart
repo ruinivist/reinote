@@ -41,12 +41,7 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
               content: EditorController.to.text,
             );
 
-            // todo: write this better
-            if (widget.note != null) {
-              NoteController.to.addNote(newNote, widget.direction!, addTo: widget.note);
-            } else {
-              NoteController.to.addNote(newNote, Direction.up);
-            }
+            NoteController.to.addNote(newNote, dir: widget.direction, addTo: widget.note);
 
             PositionController.to.resetSource(newNote);
             PositionController.to.selectedNoteId.value = newNote.id;

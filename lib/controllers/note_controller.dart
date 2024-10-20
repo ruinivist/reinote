@@ -22,12 +22,14 @@ class NoteController extends GetxController {
   //   PositionController.to.resetSource(_root!, Position.zero);
   // }
 
-  void addNote(Note note, Direction dir, {Note? addTo}) {
+  void addNote(Note note, {Direction? dir, Note? addTo}) {
+    assert(dir != null && addTo != null || dir == null && addTo == null, "If dir is null, addTo must be null");
+
     if (_root == null) {
       _root = note;
       _end = _root;
 
-      PositionController.to.resetSource(note);
+      PositionController.to.resetAndMarkSelected(note);
       return;
     }
 
@@ -52,5 +54,7 @@ class NoteController extends GetxController {
     }
 
     if (baseChain) _end = note;
+
+    PositionController.to.resetAndMarkSelected(note);
   }
 }
