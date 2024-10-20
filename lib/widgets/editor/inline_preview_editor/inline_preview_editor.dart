@@ -1,6 +1,5 @@
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:local_tl_app/markdown/editor_controller.dart';
 
 import '../md_config.dart';

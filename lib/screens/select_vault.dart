@@ -9,9 +9,7 @@ import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/utils/snackbars.dart';
 import 'package:local_tl_app/widgets/rn_container.dart';
-import 'package:permission_handler/permission_handler.dart';
 
-import '../utils/log.dart';
 import '../widgets/backround_painters.dart';
 
 class SelectVault extends StatefulWidget {

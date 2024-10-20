@@ -266,7 +266,7 @@ class PositionController extends GetxController {
     for (int i = 0; i < _positions.length; i++) {
       //positions i is not the same as notes i
       final noteSize = Size(400, MarkdownHeightEstimatorController.to.estimateMarkdownHeight(_notes[i].content));
-      final dist = mid.distanceSquared(_positions[i]);
+      final dist = mid.distanceSquared(_positions[i] + Position(noteSize.width / 2, noteSize.height / 2));
       if (dist < minDist) {
         minDist = dist;
         minIndex = i;

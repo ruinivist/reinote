@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../utils/log.dart';
-
 class EditorController extends GetxController {
   static EditorController get to => Get.find();
 

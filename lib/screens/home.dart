@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_tl_app/canvas/canvas_view.dart';
-import 'package:local_tl_app/controllers/note_controller.dart';
 
 import '../controllers/position_controller.dart';
-import '../utils/log.dart';
 import 'create_note.dart';
 
 /// check if a vault exists and create one here
@@ -38,7 +36,7 @@ class _HomeState extends State<Home> {
               },
               child: const Icon(Icons.circle_outlined),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'zoomIn',
               onPressed: () {
@@ -46,7 +44,7 @@ class _HomeState extends State<Home> {
               },
               child: const Icon(Icons.zoom_in),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'zoomOut',
               onPressed: () {
@@ -54,7 +52,7 @@ class _HomeState extends State<Home> {
               },
               child: const Icon(Icons.zoom_out),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             FloatingActionButton(
               heroTag: 'addNote',
               onPressed: () {

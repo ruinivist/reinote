@@ -3,8 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:local_tl_app/canvas/canvas_background.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 
-import '../utils/log.dart';
-
 /// no magic deps except what you pass
 class CanvasView extends StatelessWidget {
   final Offset offset;

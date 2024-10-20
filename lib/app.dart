@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:local_tl_app/canvas/canvas_background.dart';
-import 'package:local_tl_app/canvas/canvas_view.dart';
 import 'package:local_tl_app/controllers/filesystem.dart';
 import 'package:local_tl_app/controllers/note_controller.dart';
 import 'package:local_tl_app/controllers/permissions_controller.dart';
 import 'package:local_tl_app/controllers/position_controller.dart';
 import 'package:local_tl_app/controllers/theme_controller.dart';
-import 'package:local_tl_app/markdown/editor_view.dart';
-import 'package:local_tl_app/note/note_data.dart';
 import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
 import 'package:local_tl_app/screens/home.dart';

@@ -6,7 +6,6 @@ import 'package:local_tl_app/markdown/editor_view.dart';
 import 'package:local_tl_app/screens/create_note.dart';
 
 import '../controllers/note_controller.dart';
-import '../utils/log.dart';
 import 'note_model.dart';
 
 class NoteWidget extends StatelessWidget {

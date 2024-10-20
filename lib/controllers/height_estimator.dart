@@ -1,7 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
 

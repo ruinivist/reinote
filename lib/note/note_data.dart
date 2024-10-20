@@ -2,8 +2,6 @@
 
 // up is newer in time, kind of like twitter
 
-import 'package:local_tl_app/markdown/editor_controller.dart';
-
 import 'note_model.dart';
 
 final note1 = Note(title: 'note1', content: 'description1');
