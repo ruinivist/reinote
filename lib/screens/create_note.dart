@@ -119,7 +119,7 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
   }
 
   void newNote() async {
-    final newNote = Note(
+    final newNote = NoteFactory.to.newNote(
       title: "New Note",
       content: EditorController.to.text,
     );
@@ -128,13 +128,12 @@ class _CreateNoteState extends State<CreateNote> with SingleTickerProviderStateM
       newNote,
       dir: widget.direction,
       addTo: widget.note,
-      devAddAsRoot: true,
     );
     Get.back();
   }
 
   void editNote() async {
-    final newNote = Note(
+    final newNote = NoteFactory.to.newNote(
       title: "New Note",
       content: EditorController.to.text,
     );

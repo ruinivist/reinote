@@ -10,6 +10,7 @@ import 'package:local_tl_app/controllers/theme_controller.dart';
 import 'package:local_tl_app/utils/snackbars.dart';
 import 'package:local_tl_app/widgets/rn_container.dart';
 
+import '../controllers/note_controller.dart';
 import '../widgets/backround_painters.dart';
 
 class SelectVault extends StatefulWidget {
@@ -129,7 +130,7 @@ class _SelectVaultState extends State<SelectVault> with SingleTickerProviderStat
                             onPressed: () async {
                               String? selectedDirectory = await FilePicker.platform.getDirectoryPath();
                               if (selectedDirectory != null) {
-                                FileSystemController.to.vaultPath = selectedDirectory;
+                                NoteController.to.vaultPath = selectedDirectory;
                                 Get.offNamed("/home");
                               } else {
                                 Snackbars.error(

@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
-        PositionController.to.selectedNoteId.value = -1;
+        PositionController.to.selectedNoteId.value = "";
       },
       child: Scaffold(
         floatingActionButton: Column(

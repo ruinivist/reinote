@@ -18,7 +18,7 @@ class NoteWidget extends StatelessWidget {
       bool active = PositionController.to.selectedNoteId.value == note.id;
       return GestureDetector(
         onTap: () {
-          PositionController.to.selectedNoteId.value = active ? -1 : note.id;
+          PositionController.to.selectedNoteId.value = active ? "" : note.id;
         },
         onDoubleTap: () {
           // edit mode
@@ -62,19 +62,21 @@ class NoteWidget extends StatelessWidget {
                 }
               }
             : null,
-        child: Container(
-          width: 400,
-          height: MarkdownHeightEstimatorController.to.estimateMarkdownHeight(note.content),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(
-              color: active ? Get.theme.colorScheme.primary : Get.theme.colorScheme.primaryContainer,
+        child: Obx(() {
+          return Container(
+            width: 400,
+            height: MarkdownHeightEstimatorController.to.estimateMarkdownHeight(note.content),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: active ? Get.theme.colorScheme.primary : Get.theme.colorScheme.primaryContainer,
+              ),
+              borderRadius: BorderRadius.circular(10),
             ),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          margin: EdgeInsets.zero,
-          child: EditorView(text: note.content, isScrollable: active),
-        ),
+            margin: EdgeInsets.zero,
+            child: EditorView(text: note.content, isScrollable: active),
+          );
+        }),
       );
     });
   }

@@ -10,6 +10,7 @@ import 'package:local_tl_app/note/note_model.dart';
 import 'package:local_tl_app/screens/create_note.dart';
 import 'package:local_tl_app/screens/home.dart';
 import 'package:local_tl_app/screens/select_vault.dart';
+import 'package:local_tl_app/utils/log.dart';
 import 'package:local_tl_app/widgets/editor/md_config.dart';
 import 'package:local_tl_app/widgets/transitions/sharex_axis_page_transition.dart';
 
@@ -27,7 +28,6 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     Get.put(ThemeController());
     Get.put(PermissionsController());
-    Get.put(FileSystemController());
     Get.put(
       PositionController(
         sourceNote: const NoNote(),
@@ -38,11 +38,11 @@ class _AppState extends State<App> {
         screen: MediaQuery.of(context).size,
       ),
     );
-    Get.put(MarkdownHeightEstimatorController());
     Get.put(NoteController());
+    Get.put(NoteFactory(NoteController.to.writeToFile));
+    Get.put(MarkdownHeightEstimatorController());
     return Obx(
       () => GetMaterialApp(
-        // showPerformanceOverlay: true,
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           textTheme: GoogleFonts.jetBrainsMonoTextTheme(
@@ -59,7 +59,7 @@ class _AppState extends State<App> {
             // this is separate so that it has the context that has theme data
             Get.put(MdConfig.defaults());
 
-            if (FileSystemController.to.hasVault) {
+            if (NoteController.to.hasVault) {
               return const Home();
             } else {
               return const SelectVault();

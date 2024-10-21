@@ -33,7 +33,7 @@ class NoteUtils {
     return Map<String, dynamic>.from(yamlMap);
   }
 
-  static String mapToYAML(Map<String, String> map) {
+  static String mapToYAML(Map<String, dynamic> map) {
     final yamlMap = YamlMap.wrap(map);
     String yamlString = '';
     for (final key in yamlMap.keys) {

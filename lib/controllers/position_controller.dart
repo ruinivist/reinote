@@ -52,7 +52,7 @@ class Position {
 class PositionController extends GetxController {
   static PositionController get to => Get.find();
 
-  final selectedNoteId = (-1).obs;
+  final selectedNoteId = "".obs;
 
   Offset _offset = Offset.zero;
   Offset get offset => _offset;
@@ -64,7 +64,7 @@ class PositionController extends GetxController {
   /// centers the active note & resets scale
   void focusActiveNote() {
     // active note must be in positions
-    if (selectedNoteId.value == -1) return;
+    if (selectedNoteId.value.isEmpty) return;
     final activeNoteIndex = notes.indexWhere((note) => note.id == selectedNoteId.value);
     if (activeNoteIndex == -1) return;
 
@@ -159,8 +159,6 @@ class PositionController extends GetxController {
     List<Position> positions = [];
     List<Note> notes = [];
 
-    lg.i('source note: ${(_sourceNote as Note).id} source position: $_gsSourcePosition');
-
     List<(Note, Note, Position, Direction)> stack = [
       (_sourceNote as Note, _sourceNote as Note, _gsSourcePosition, Direction.none)
     ];
@@ -193,7 +191,6 @@ class PositionController extends GetxController {
       final newCurPos = positions.last;
 
       // Convert grid space position to screen space
-      lg.i('size ofr note ${curNote.id}: $noteSize');
       final ssNotePos = curPos.toOffset() * _scale + _offset;
       final scaledNoteSize = Size(noteSize.width * _scale, noteSize.height * _scale);
 
@@ -229,9 +226,6 @@ class PositionController extends GetxController {
 
     _positions.value = positions;
     _notes.value = notes;
-
-    lg.i('Positions: $_positions');
-    lg.i('Notes: $_notes');
   }
 
   List<Position> get positions => _positions;
@@ -242,7 +236,7 @@ class PositionController extends GetxController {
             scale: _scale,
             child: NoteWidget(
               note: note,
-              key: ValueKey<int>(note.id),
+              key: ValueKey<String>(note.id),
             ),
           ))
       .toList();
@@ -275,9 +269,6 @@ class PositionController extends GetxController {
 
     _sourceNote = _notes[minIndex];
     _gsSourcePosition = _positions[minIndex];
-
-    lg.i('New source: ${(_sourceNote as Note).id}');
-    lg.i('New source position: $_gsSourcePosition');
   }
 
   /// restart afresh with new source
